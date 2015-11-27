@@ -69,7 +69,6 @@ hot-node = null
 
 draw = ->
   workspace.clear!
-
   links.map (.draw workspace)
   nodes.map (.draw workspace)
 
@@ -77,12 +76,67 @@ draw = ->
 # Dragger
 
 dragger = new DragMonitor
-
+dragger.on-pointer-release draw
 dragger.on-pointer-drag (Δx, Δy) ->
   hot-node?.move-by v2 Δx, Δy
   draw!
 
-dragger.on-pointer-release draw
+
+# Fake triggers
+
+class KeyTrigger
+
+  (keycode) ->
+    @state    = off
+    @callback = id
+
+    document.add-event-listener \keydown, ({ which }) ~>
+      if keycode is which
+        @state = on
+        @callback on
+
+    document.add-event-listener \keyup, ({ which }) ~>
+      if keycode is which
+        @state = off
+        @callback off
+
+  on-state-change: (λ) ->
+    @callback = λ
+
+
+# Puppet
+
+class Puppet
+  ->
+    @frames =
+      idle  : null
+      draw  : null
+      study : null
+      frust : null
+      trash : null
+      drop  : null
+      think : null
+      drink : null
+      choke : null
+      cat   : null
+      sing  : null
+
+puppet = new Puppet
+
+
+z = new KeyTrigger KEY_Z
+x = new KeyTrigger KEY_X
+c = new KeyTrigger KEY_C
+v = new KeyTrigger KEY_V
+
+z.on-state-change -> log "Z!", it
+x.on-state-change -> log "X!", it
+c.on-state-change -> log "C!", it
+v.on-state-change -> log "V!", it
+
+
+
+
 
 
 # Listeners
