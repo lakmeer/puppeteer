@@ -11,10 +11,8 @@ export class Link
     @color = random-from colors
 
   draw: ({ ctx }) ->
-    log d = hyp @to.pos, @from.pos
-
+    d = hyp @to.pos, @from.pos
     b = if d <= bend-strength then bend-strength * (d/bend-strength)**2 else bend-strength
-
     ctx.stroke-style = @color
     ctx.line-width = 5
     ctx.begin-path!

@@ -24,3 +24,5 @@ export hyp = (a, b) ->
   Δy = b.y - a.y
   sqrt Δx * Δx + Δy * Δy
 
+export raf = request-animation-frame
+

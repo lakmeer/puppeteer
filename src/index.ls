@@ -1,5 +1,5 @@
 
-{ id, log, v2 } = require \std
+{ id, log, raf, v2 } = require \std
 
 { } = require \config
 
@@ -9,7 +9,6 @@
 { Link }        = require \./link
 { InputSet }    = require \./input-set
 { RectXYS }     = require \./rect
-
 
 
 class Node
@@ -71,11 +70,8 @@ hot-node = null
 draw = ->
   workspace.clear!
 
-  for link in links
-    link.draw workspace
-
-  for node in nodes
-    node.draw workspace
+  links.map (.draw workspace)
+  nodes.map (.draw workspace)
 
 
 # Dragger
