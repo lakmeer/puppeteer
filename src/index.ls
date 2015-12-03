@@ -1,5 +1,5 @@
 
-{ id, log, raf, v2 } = require \std
+{ id, log, raf, mash, v2 } = require \std
 
 { } = require \config
 
@@ -9,6 +9,20 @@
 { Link }        = require \./link
 { InputSet }    = require \./input-set
 { RectXYS }     = require \./rect
+{ Sprite }      = require \./sprite
+
+{ Blitter } = require \./blitter
+
+{ KeyTrigger }   = require \./triggers/key
+{ MicTrigger }   = require \./triggers/mic
+{ MouseTrigger } = require \./triggers/mouse
+
+
+load-image = (src, λ = id) ->
+  image = new Image
+  image.src = src
+  image.onload = λ
+  return image
 
 
 class Node
@@ -51,10 +65,10 @@ class Node
 # Setup
 
 nodes = [
-  new Node type: Graphic, size: 120, pos: v2 100, 100
-  new Node type: Graphic, size: 160, pos: v2 350, 350
-  new Node type: Graphic, size: 160, pos: v2 600, 600
-  new Node type: Graphic, size:  80, pos: v2 850, 850
+  new Node type: Graphic, size:  80, pos: v2 50, 50
+  new Node type: Graphic, size: 100, pos: v2 200, 200
+  new Node type: Graphic, size: 120, pos: v2 350, 350
+  new Node type: Graphic, size:  40, pos: v2 500, 500
 ]
 
 links = [
@@ -68,9 +82,15 @@ workspace = new Workspace
 hot-node = null
 
 draw = ->
+  raf draw
   workspace.clear!
   links.map (.draw workspace)
   nodes.map (.draw workspace)
+  avatar.draw workspace
+  audio.draw workspace
+
+poke = ->
+  draw!
 
 
 # Dragger
@@ -82,79 +102,80 @@ dragger.on-pointer-drag (Δx, Δy) ->
   draw!
 
 
-# Fake triggers
-
-class KeyTrigger
-
-  (keycode) ->
-    @state    = off
-    @callback = id
-
-    document.add-event-listener \keydown, ({ which }) ~>
-      if keycode is which
-        @state = on
-        @callback on
-
-    document.add-event-listener \keyup, ({ which }) ~>
-      if keycode is which
-        @state = off
-        @callback off
-
-  on-state-change: (λ) ->
-    @callback = λ
-
-
-# Puppet
-
-class Puppet
-  ->
-    @frames =
-      idle  : null
-      draw  : null
-      study : null
-      frust : null
-      trash : null
-      drop  : null
-      think : null
-      drink : null
-      choke : null
-      cat   : null
-      sing  : null
-
-puppet = new Puppet
-
+# Trigger/Puppet Tests
 
 z = new KeyTrigger KEY_Z
 x = new KeyTrigger KEY_X
 c = new KeyTrigger KEY_C
 v = new KeyTrigger KEY_V
 
-z.on-state-change -> log "Z!", it
-x.on-state-change -> log "X!", it
-c.on-state-change -> log "C!", it
-v.on-state-change -> log "V!", it
+left  = new MouseTrigger MOUSE_LEFT
+right = new MouseTrigger MOUSE_RIGHT
+audio = new MicTrigger
+
+z.on-state-change -> avatar.set \choke it
+x.on-state-change -> avatar.set \drop it
+c.on-state-change -> avatar.set \frustrate it
+v.on-state-change -> avatar.set \trash it
+
+left.on-state-change  -> avatar.set \draw it
+right.on-state-change -> avatar.set \drink it
+
+audio.on-state-change -> avatar.set \sing it
 
 
+class Puppet
 
+  ->
+    @animations = mash do
+      for name in <[ choke draw drink drop frustrate look sing stufy think trash ]>
+        [ name, new Sprite src: "assets/#{name}_01.png" ]
+
+    @chain = [
+      @animations.look
+      @animations.choke
+      @animations.draw
+      @animations.drink
+      @animations.drop
+      @animations.frustrate
+      @animations.sing
+      @animations.stufy
+      @animations.think
+      @animations.trash
+    ]
+
+    @state =
+      current-sprite: @animations.look
+
+  set: (sprite-name, state) ->
+    #log \set sprite-name, state
+    @animations[sprite-name].active = state
+
+  draw: ({ ctx }) ->
+    winner = @chain.0
+    for sprite, i in @chain when i > 0
+      if sprite.active
+        winner = sprite
+    winner.blit-to ctx, 0, 0, 200, 200
+
+
+avatar = new Puppet
 
 
 
 # Listeners
 
 document.add-event-listener \mousemove, ({ pageX, pageY }) ->
-
   if hot-node?.state.mode is INTERACTION_MODE_ACTIVE
     return
 
   hot-found = no
 
   for node in nodes
-
     if node.bounds-contains v2 pageX, pageY
       node.set-mode INTERACTION_MODE_HOT
       hot-found := yes
       hot-node := node
-
     else
       node.set-mode INTERACTION_MODE_IDLE
 
@@ -162,7 +183,6 @@ document.add-event-listener \mousemove, ({ pageX, pageY }) ->
     hot-node := null
 
   draw!
-
 
 document.add-event-listener \mousedown, ->
   hot-node?.set-mode INTERACTION_MODE_ACTIVE

@@ -13,3 +13,9 @@ export class Blitter
   clear: ->
     @ctx.clear-rect 0, 0, @size, @size
 
+  blit-to: (ctx, x, y, w, h) ->
+    if w? and h?
+      ctx.draw-image @canvas, x, y, w, h
+    else
+      ctx.draw-image @canvas, x, y
+

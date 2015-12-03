@@ -4,7 +4,7 @@
 export class Workspace extends Blitter
 
   ->
-    super size: 1000
+    super size: 550
 
   install: (host) ->
     host.append-child @canvas

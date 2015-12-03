@@ -1,5 +1,16 @@
 
+{ id, log } = require \std
+
 export class Trigger
+
   ->
-    log "new BassTrigger"
+    @state    = off
+    @callback = id
+
+  set: (state) ->
+    @state = state
+    @callback state
+
+  on-state-change: (λ) ->
+    @callback = λ
 

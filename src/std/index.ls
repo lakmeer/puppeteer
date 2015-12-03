@@ -26,3 +26,12 @@ export hyp = (a, b) ->
 
 export raf = request-animation-frame
 
+export mash = (xs) -> { [ k, v ] for [ k, v ] in xs }
+
+export log-error = -> log @, &
+
+export get-microphone = (λ) ->
+  navigator.webkit-get-user-media { audio: true }, λ, log-error
+
+export keys = -> for k,v of it => k
+
