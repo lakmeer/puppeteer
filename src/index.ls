@@ -17,6 +17,8 @@
 { MicTrigger }   = require \./triggers/mic
 { MouseTrigger } = require \./triggers/mouse
 
+{ Puppet } = require \./puppet
+
 
 load-image = (src, λ = id) ->
   image = new Image
@@ -82,15 +84,14 @@ workspace = new Workspace
 hot-node = null
 
 draw = ->
-  raf draw
+  #raf draw
   workspace.clear!
+  #avatar.draw workspace
   links.map (.draw workspace)
   nodes.map (.draw workspace)
-  avatar.draw workspace
-  audio.draw workspace
+  #audio.draw workspace
 
-poke = ->
-  draw!
+global.poke = -> draw!
 
 
 # Dragger
@@ -111,7 +112,9 @@ v = new KeyTrigger KEY_V
 
 left  = new MouseTrigger MOUSE_LEFT
 right = new MouseTrigger MOUSE_RIGHT
-audio = new MicTrigger
+#audio = new MicTrigger
+
+avatar = new Puppet
 
 z.on-state-change -> avatar.set \choke it
 x.on-state-change -> avatar.set \drop it
@@ -121,46 +124,7 @@ v.on-state-change -> avatar.set \trash it
 left.on-state-change  -> avatar.set \draw it
 right.on-state-change -> avatar.set \drink it
 
-audio.on-state-change -> avatar.set \sing it
-
-
-class Puppet
-
-  ->
-    @animations = mash do
-      for name in <[ choke draw drink drop frustrate look sing stufy think trash ]>
-        [ name, new Sprite src: "assets/#{name}_01.png" ]
-
-    @chain = [
-      @animations.look
-      @animations.choke
-      @animations.draw
-      @animations.drink
-      @animations.drop
-      @animations.frustrate
-      @animations.sing
-      @animations.stufy
-      @animations.think
-      @animations.trash
-    ]
-
-    @state =
-      current-sprite: @animations.look
-
-  set: (sprite-name, state) ->
-    #log \set sprite-name, state
-    @animations[sprite-name].active = state
-
-  draw: ({ ctx }) ->
-    winner = @chain.0
-    for sprite, i in @chain when i > 0
-      if sprite.active
-        winner = sprite
-    winner.blit-to ctx, 0, 0, 200, 200
-
-
-avatar = new Puppet
-
+#audio.on-state-change -> avatar.set \sing it
 
 
 # Listeners

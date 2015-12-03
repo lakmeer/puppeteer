@@ -10,6 +10,7 @@ export class Trigger
   set: (state) ->
     @state = state
     @callback state
+    poke!
 
   on-state-change: (λ) ->
     @callback = λ

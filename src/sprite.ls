@@ -9,9 +9,10 @@ export class Sprite extends Blitter
     @img = new Image
 
     @img.onload = ~>
-      @canvas.width = @img.width
-      @canvas.height = @img.height
+      @width  = @canvas.width  = @img.width
+      @height = @canvas.height = @img.height
       @ctx.draw-image @img, 0, 0
+      poke!
 
     @img.src = src
 

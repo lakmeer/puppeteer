@@ -1,29 +1,20 @@
 
-# Helpers
-
 { id, log, raf, keys, get-microphone } = require \std
 
 { Trigger } = require \./base
 
 
-# Options
-
-SMOOTHING = 50
-THRESHOLD = 1.2
-
-
-# Setup
-
 export class MicTrigger extends Trigger
+
+  SMOOTHING = 5
+  THRESHOLD = 1.1
 
   ->
     @running = no
-    @audio = new AudioContext
+    @audio   = new AudioContext
+    @hist    = []
+    @avg     = 0
 
-    @hist = []
-    @avg  = 0
-
-    # Init
     @analyser = @audio.create-analyser!
     @analyser.fft-size = 2048
     @buffer-length = @analyser.frequency-bin-count
@@ -36,48 +27,31 @@ export class MicTrigger extends Trigger
       @monitor!
 
   monitor: ->
-    if @running
-      raf this~monitor
-
-  draw: ({ ctx }) ->
-
+    if @running then raf this~monitor
     @analyser.getByteTimeDomainData @data-array
-
-    width  = 300
-    height = 300
-
+    avg = 0
     max = 0
 
-    # Draw mic input
     for i from 0 to @buffer-length
       sample = @data-array[i]
-
-      if sample > max
+      if sample > max then
         max = sample
 
-    max /= 128
-    @hist.push max
-
+    @hist.push max / 128
     if @hist.length >= SMOOTHING
       @hist.shift!
 
-    threshold = THRESHOLD
-
-    avg = 0
     for p in @hist => avg += p
-    avg /= @hist.length
+    avg /= SMOOTHING
+    @set avg > THRESHOLD
+    @avg = avg
 
-    # Draw average level
-    ctx.global-composite-operation = 'source-over'
+  draw: ({ ctx, size }) ->
+    ctx.fill-style = \grey
+    ctx.fill-rect 0 0 size, 5
+    ctx.fill-style = \lightgrey
+    ctx.fill-rect 0 0 size/2 * THRESHOLD, 5
+    ctx.fill-style = if @state then \red else \blue
+    ctx.fill-rect 0 0 size/2 * @avg, 5
     ctx.global-alpha = 1
-
-    if avg > THRESHOLD
-      @set on
-    else
-      @set off
-
-    ctx.fill-style = \blue
-    ctx.fill-rect 0, height - avg * height/2, width, 2
-    ctx.fill-style = \black
-    ctx.fill-rect 0, height - threshold * height/2, width, 2
 
