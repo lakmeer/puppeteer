@@ -5,10 +5,9 @@
 
 { DragMonitor } = require \./drag-monitor
 { Workspace }   = require \./workspace
-{ Graphic }     = require \./graphic
+{ Node }        = require \./node
 { Link }        = require \./link
 { InputSet }    = require \./input-set
-{ RectXYS }     = require \./rect
 { Sprite }      = require \./sprite
 
 { Blitter } = require \./blitter
@@ -16,82 +15,72 @@
 { KeyTrigger }   = require \./triggers/key
 { MicTrigger }   = require \./triggers/mic
 { MouseTrigger } = require \./triggers/mouse
+{ TimerTrigger } = require \./triggers/timer
 
 { Puppet } = require \./puppet
 
 
-load-image = (src, λ = id) ->
-  image = new Image
-  image.src = src
-  image.onload = λ
-  return image
-
-
-class Node
-
-  ({ type, @pos, @size }) ->
-
-    @state =
-      mode: INTERACTION_MODE_IDLE
-
-    @content = new type
-    @bounds  = new RectXYS @pos, @size
-    @inputs  = new InputSet @size/-2, @pos
-    @outputs = new InputSet @size/+2, @pos
-
-  draw: ({ ctx }) ->
-    ctx.draw-image @content.canvas, @pos.x - @size/2 , @pos.y - @size/2, @size, @size
-
-  set-mode: (mode) ->
-    @content.set-mode mode
-    @state.mode = mode
-
-  move-to: ({ x, y }) ->
-    @pos.x = x
-    @pos.y = y
-    @bounds.mvoe-to @pos
-    @inputs.move-to @pos
-    @outputs.move-to @pos
-
-  move-by: ({ x, y }) ->
-    @pos.x += x
-    @pos.y += y
-    @bounds.move-to @pos
-    @inputs.move-to @pos
-    @outputs.move-to @pos
-
-  bounds-contains: (point) ->
-    @bounds.contains point
-
-
 # Setup
 
-nodes = [
-  new Node type: Graphic, size:  80, pos: v2 50, 50
-  new Node type: Graphic, size: 100, pos: v2 200, 200
-  new Node type: Graphic, size: 120, pos: v2 350, 350
-  new Node type: Graphic, size:  40, pos: v2 500, 500
-]
-
-links = [
-  new Link nodes.0.outputs.first, nodes.1.inputs.first
-  new Link nodes.1.outputs.first, nodes.2.inputs.first
-  new Link nodes.2.outputs.first, nodes.3.inputs.first
-]
-
+nodes = []
+links = []
+hot-node = null
 workspace = new Workspace
 
-hot-node = null
+
+# Create Triggers/Nodes
+
+z = new KeyTrigger KEY_Z
+x = new KeyTrigger KEY_X
+c = new KeyTrigger KEY_C
+v = new KeyTrigger KEY_V
+t = new TimerTrigger time: 1
+
+left  = new MouseTrigger MOUSE_LEFT
+right = new MouseTrigger MOUSE_RIGHT
+#audio = new MicTrigger
+
+puppet = new Puppet
+
+z.on-state-change -> puppet.set \choke it
+x.on-state-change -> puppet.set \drop it
+c.on-state-change -> puppet.set \frustrate it
+v.on-state-change -> puppet.set \trash it
+t.on-state-change -> puppet.set \study it
+
+left.on-state-change  -> puppet.set \draw it
+right.on-state-change -> puppet.set \drink it
+#audio.on-state-change -> puppet.set \sing it
+
+# Assign logical nodes to representative nodes
+nodes.push z-node = new Node content: z, size: 100, pos: v2 200 100
+nodes.push x-node = new Node content: x, size: 100, pos: v2 200 200
+nodes.push c-node = new Node content: c, size: 100, pos: v2 200 300
+nodes.push v-node = new Node content: v, size: 100, pos: v2 200 400
+nodes.push t-node = new Node content: t, size: 100, pos: v2  75 250
+
+nodes.push puppet-node = new Node content: puppet, size: 200, pos: v2 450 250
+
+# Create links between them
+links.push new Link z-node.outputs.first, puppet-node.inputs.first
+links.push new Link x-node.outputs.first, puppet-node.inputs.first
+links.push new Link c-node.outputs.first, puppet-node.inputs.first
+links.push new Link v-node.outputs.first, puppet-node.inputs.first
+links.push new Link t-node.outputs.first, puppet-node.inputs.first
+
+
+# Rendering
 
 draw = ->
   #raf draw
   workspace.clear!
-  #avatar.draw workspace
+  puppet.draw workspace
   links.map (.draw workspace)
   nodes.map (.draw workspace)
   #audio.draw workspace
 
-global.GlobalServices.Poke.poke = -> draw!
+global.GlobalServices.Poke.poke = ->
+  set-timeout draw, 0
 
 
 # Dragger
@@ -101,30 +90,6 @@ dragger.on-pointer-release draw
 dragger.on-pointer-drag (Δx, Δy) ->
   hot-node?.move-by v2 Δx, Δy
   draw!
-
-
-# Trigger/Puppet Tests
-
-z = new KeyTrigger KEY_Z
-x = new KeyTrigger KEY_X
-c = new KeyTrigger KEY_C
-v = new KeyTrigger KEY_V
-
-left  = new MouseTrigger MOUSE_LEFT
-right = new MouseTrigger MOUSE_RIGHT
-#audio = new MicTrigger
-
-avatar = new Puppet
-
-z.on-state-change -> avatar.set \choke it
-x.on-state-change -> avatar.set \drop it
-c.on-state-change -> avatar.set \frustrate it
-v.on-state-change -> avatar.set \trash it
-
-left.on-state-change  -> avatar.set \draw it
-right.on-state-change -> avatar.set \drink it
-
-#audio.on-state-change -> avatar.set \sing it
 
 
 # Listeners

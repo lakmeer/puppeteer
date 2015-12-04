@@ -3,12 +3,13 @@
 
 export class InputSet
 
-  (@offset, pos) ->
+  (@source, @offset, pos) ->
     @pos = v2 0, 0
     @move-to pos
+    @state = off
 
   pull: ->
-    log \pull!, this
+    @source.state.signal
 
   move-to: ({ x, y }) ->
     @pos.x = x + @offset

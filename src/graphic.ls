@@ -14,9 +14,9 @@ export class Graphic extends Blitter
 
   mode-color: (mode) ->
     switch mode
-    | INTERACTION_MODE_IDLE   => \red
+    | INTERACTION_MODE_IDLE   => \darkred
     | INTERACTION_MODE_HOT    => \orange
-    | INTERACTION_MODE_ACTIVE => \yellow
+    | INTERACTION_MODE_ACTIVE => \red
 
   fill-self: ->
     @ctx.fill-style = @mode-color @state.mode

@@ -1,19 +1,20 @@
 
 { id, log, hyp, random-from } = require \std
 
+COLOR_DARK_GREEN = \green
+COLOR_BRIGHT_GREEN = \#0e3
 
 export class Link
 
   bend-strength = 150
-  colors = <[ red #0e3 blue black ]>
 
   (@from, @to) ->
-    @color = random-from colors
 
   draw: ({ ctx }) ->
+    state = @from.pull!
     d = hyp @to.pos, @from.pos
     b = if d <= bend-strength then bend-strength * (d/bend-strength)**2 else bend-strength
-    ctx.stroke-style = @color
+    ctx.stroke-style = if state then COLOR_DARK_GREEN else COLOR_BRIGHT_GREEN
     ctx.line-width = 5
     ctx.begin-path!
     ctx.move-to @from.pos.x, @from.pos.y

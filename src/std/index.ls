@@ -35,3 +35,9 @@ export get-microphone = (λ) ->
 
 export keys = -> for k,v of it => k
 
+export load-image = (src, λ = id) ->
+  image = new Image
+  image.src = src
+  image.onload = λ
+  return image
+
