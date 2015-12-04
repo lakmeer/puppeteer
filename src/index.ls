@@ -91,7 +91,7 @@ draw = ->
   nodes.map (.draw workspace)
   #audio.draw workspace
 
-global.poke = -> draw!
+global.GlobalServices.Poke.poke = -> draw!
 
 
 # Dragger

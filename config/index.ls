@@ -14,3 +14,9 @@ global.KEY_V = 86
 global.MOUSE_LEFT = 0
 global.MOUSE_RIGHT = 2
 
+
+# Globally-available Service Locators
+
+global.GlobalServices =
+  Poke: poke: -> it
+

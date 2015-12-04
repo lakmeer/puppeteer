@@ -10,7 +10,7 @@ export class Trigger
   set: (state) ->
     @state = state
     @callback state
-    poke!
+    GlobalServices.Poke.poke!
 
   on-state-change: (λ) ->
     @callback = λ

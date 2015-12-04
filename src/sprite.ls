@@ -12,7 +12,7 @@ export class Sprite extends Blitter
       @width  = @canvas.width  = @img.width
       @height = @canvas.height = @img.height
       @ctx.draw-image @img, 0, 0
-      poke!
+      GlobalServices.Poke.poke!
 
     @img.src = src
 
