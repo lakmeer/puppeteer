@@ -12,15 +12,15 @@ export class Puppet
 
     @chain = [
       @animations.look
-      @animations.choke
       @animations.draw
-      @animations.drink
+      @animations.choke
       @animations.drop
       @animations.frustrate
       @animations.sing
       @animations.study
       @animations.think
       @animations.trash
+      @animations.drink
     ]
 
     @state =

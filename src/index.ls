@@ -12,88 +12,17 @@
 
 { Blitter } = require \./blitter
 
+{ Puppet } = require \./puppet
+
 { KeyTrigger }   = require \./triggers/key
 { MicTrigger }   = require \./triggers/mic
 { MouseTrigger } = require \./triggers/mouse
 { TimerTrigger } = require \./triggers/timer
 
-{ Puppet } = require \./puppet
+{ KeyRep }    = require \./representations/key
+{ TimerRep }  = require \./representations/timer
+{ PuppetRep } = require \./representations/puppet
 
-class Representation
-
-  (@target) ->
-    @size = 100
-    @state = mode: INTERACTION_MODE_IDLE
-    @canvas = document.create-element \canvas
-    @canvas.width = @canvas.height = @size
-    @ctx = @canvas.get-context \2d
-    @ctx.fill-style = \lightgrey
-    @ctx.fill-rect 0, 0, @size, @size
-
-  draw: ->
-    @ctx.fill-style = @border-color!
-    @ctx.fill-rect 0, 0, @canvas.width, @canvas.height
-    @ctx.fill-style = \white
-    @ctx.fill-rect 10, 10, @size - 20, @size - 20
-
-  border-color: ->
-    if @target.state
-      COLOR_BRIGHT_GREEN
-    else
-      @mode-color @state.mode
-
-  mode-color: (mode) ->
-    switch mode
-    | INTERACTION_MODE_IDLE   => \darkred
-    | INTERACTION_MODE_HOT    => \orange
-    | INTERACTION_MODE_ACTIVE => \red
-
-  set-mode: (mode) ->
-    @state.mode = mode
-
-
-class KeyRep extends Representation
-
-  ->
-    super ...
-
-  draw: ->
-    super ...
-    @ctx.fill-style = \black
-    @ctx.font = "#{@size/2}px monospace"
-    @ctx.text-align = \center
-    @ctx.text-baseline = \middle
-    @ctx.fill-text @target.keysym, @size/2, @size/2, @size, @size
-
-class TimerRep extends Representation
-
-  ->
-    super ...
-
-  draw: ->
-    super ...
-    @ctx.fill-style = \black
-    @ctx.font = "#{@size/4}px monospace"
-    @ctx.text-align = \center
-    @ctx.text-baseline = \middle
-    @ctx.begin-path!
-    @ctx.move-to 0, @size/2
-    @ctx.line-to @size, @size/2
-    @ctx.close-path!
-    @ctx.stroke!
-    @ctx.fill-text @target.time, @size/2, @size/2 - @size/5, @size, @size
-    @ctx.fill-text @target.duty, @size/2, @size/2 + @size/5, @size, @size
-
-class PuppetRep extends Representation
-
-  ->
-    super ...
-
-  draw: ->
-    @size = @target.get-size!
-    @canvas.width = @canvas.height = @size
-    super ...
-    @target.draw ctx: @ctx, size: @size - 20, offset: v2 10 10
 
 
 # Setup
@@ -111,9 +40,9 @@ x = new KeyTrigger KEY_X
 c = new KeyTrigger KEY_C
 v = new KeyTrigger KEY_V
 t = new TimerTrigger time: 1
+p = new TimerTrigger time: 1.5, duty: 0.1
 
 left  = new MouseTrigger MOUSE_LEFT
-right = new MouseTrigger MOUSE_RIGHT
 #audio = new MicTrigger
 
 puppet = new Puppet
@@ -123,26 +52,28 @@ x.on-state-change -> puppet.set \drop it
 c.on-state-change -> puppet.set \frustrate it
 v.on-state-change -> puppet.set \trash it
 t.on-state-change -> puppet.set \study it
+p.on-state-change -> puppet.set \drink it
 
 left.on-state-change  -> puppet.set \draw it
-right.on-state-change -> puppet.set \drink it
 #audio.on-state-change -> puppet.set \sing it
 
 # Assign logical nodes to representative nodes
-nodes.push z-node = new Node content: z, rep: (new KeyRep z), size: 100, pos: v2 200 100
-nodes.push x-node = new Node content: x, rep: (new KeyRep x), size: 100, pos: v2 200 205
-nodes.push c-node = new Node content: c, rep: (new KeyRep c), size: 100, pos: v2 200 310
-nodes.push v-node = new Node content: v, rep: (new KeyRep v), size: 100, pos: v2 200 415
-nodes.push t-node = new Node content: t, rep: (new TimerRep t), size: 100, pos: v2  75 260
+nodes.push z-node = new Node content: z, rep: (new KeyRep z),   size: 70,  pos: v2 230 100
+nodes.push x-node = new Node content: x, rep: (new KeyRep x),   size: 70,  pos: v2 230 180
+nodes.push c-node = new Node content: c, rep: (new KeyRep c),   size: 70,  pos: v2 230 260
+nodes.push v-node = new Node content: v, rep: (new KeyRep v),   size: 70,  pos: v2 230 340
+nodes.push t-node = new Node content: t, rep: (new TimerRep t), size: 100, pos: v2  80 280
+nodes.push p-node = new Node content: p, rep: (new TimerRep p), size: 100, pos: v2  80 400
 
-nodes.push puppet-node = new Node content: puppet, rep: (new PuppetRep puppet), inputs: 5, size: 180, pos: v2 450 260
+nodes.push puppet-node = new Node content: puppet, rep: (new PuppetRep puppet), inputs: 6, size: 180, pos: v2 450 260
 
 # Create links between them
 links.push new Link z-node.outputs.next, puppet-node.inputs.next
 links.push new Link x-node.outputs.next, puppet-node.inputs.next
 links.push new Link c-node.outputs.next, puppet-node.inputs.next
-links.push new Link v-node.outputs.next, puppet-node.inputs.next
 links.push new Link t-node.outputs.next, puppet-node.inputs.next
+links.push new Link v-node.outputs.next, puppet-node.inputs.next
+links.push new Link p-node.outputs.next, puppet-node.inputs.next
 
 
 # Rendering
