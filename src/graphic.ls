@@ -8,6 +8,8 @@ export class Graphic extends Blitter
     @state = mode: INTERACTION_MODE_IDLE
     @fill-self!
 
+  update: ->
+
   set-mode: (mode) ->
     @state.mode = mode
     @fill-self!

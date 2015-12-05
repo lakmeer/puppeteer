@@ -6,15 +6,18 @@ COLOR_BRIGHT_GREEN = \#0e3
 
 export class Link
 
-  bend-strength = 150
+  bend-strength = 50
 
   (@from, @to) ->
+    @from.assign-link this
+    @to.assign-link this
 
   draw: ({ ctx }) ->
     state = @from.pull!
     d = hyp @to.pos, @from.pos
-    b = if d <= bend-strength then bend-strength * (d/bend-strength)**2 else bend-strength
-    ctx.stroke-style = if state then COLOR_DARK_GREEN else COLOR_BRIGHT_GREEN
+    d = @to.pos.x - @from.pos.x
+    b = if d <= bend-strength then bend-strength * (d/bend-strength)**1.4 else bend-strength
+    ctx.stroke-style = if state then COLOR_BRIGHT_GREEN else COLOR_DARK_GREEN
     ctx.line-width = 5
     ctx.begin-path!
     ctx.move-to @from.pos.x, @from.pos.y
