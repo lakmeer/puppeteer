@@ -57,6 +57,33 @@ class KeyRep extends Representation
   ->
     super ...
 
+  draw: ->
+    super ...
+    @ctx.fill-style = \black
+    @ctx.font = "#{@size/2}px monospace"
+    @ctx.text-align = \center
+    @ctx.text-baseline = \middle
+    @ctx.fill-text @target.keysym, @size/2, @size/2, @size, @size
+
+class TimerRep extends Representation
+
+  ->
+    super ...
+
+  draw: ->
+    super ...
+    @ctx.fill-style = \black
+    @ctx.font = "#{@size/4}px monospace"
+    @ctx.text-align = \center
+    @ctx.text-baseline = \middle
+    @ctx.begin-path!
+    @ctx.move-to 0, @size/2
+    @ctx.line-to @size, @size/2
+    @ctx.close-path!
+    @ctx.stroke!
+    @ctx.fill-text @target.time, @size/2, @size/2 - @size/5, @size, @size
+    @ctx.fill-text @target.duty, @size/2, @size/2 + @size/5, @size, @size
+
 class PuppetRep extends Representation
 
   ->
@@ -103,10 +130,10 @@ right.on-state-change -> puppet.set \drink it
 
 # Assign logical nodes to representative nodes
 nodes.push z-node = new Node content: z, rep: (new KeyRep z), size: 100, pos: v2 200 100
-nodes.push x-node = new Node content: x, rep: (new KeyRep z), size: 100, pos: v2 200 205
-nodes.push c-node = new Node content: c, rep: (new KeyRep z), size: 100, pos: v2 200 310
-nodes.push v-node = new Node content: v, rep: (new KeyRep z), size: 100, pos: v2 200 415
-nodes.push t-node = new Node content: t, rep: (new KeyRep z), size: 100, pos: v2  75 260
+nodes.push x-node = new Node content: x, rep: (new KeyRep x), size: 100, pos: v2 200 205
+nodes.push c-node = new Node content: c, rep: (new KeyRep c), size: 100, pos: v2 200 310
+nodes.push v-node = new Node content: v, rep: (new KeyRep v), size: 100, pos: v2 200 415
+nodes.push t-node = new Node content: t, rep: (new TimerRep t), size: 100, pos: v2  75 260
 
 nodes.push puppet-node = new Node content: puppet, rep: (new PuppetRep puppet), inputs: 5, size: 180, pos: v2 450 260
 

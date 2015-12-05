@@ -3,10 +3,19 @@
 
 { Trigger } = require \./base
 
+keysymbols =
+  90: \Z
+  88: \X
+  67: \C
+  86: \V
+
+
 export class KeyTrigger extends Trigger
 
   (keycode) ->
     super ...
+
+    @keysym = keysymbols[keycode]
 
     @canvas = document.create-element \canvas
     @canvas.width = @canvas.height = 100
