@@ -39,6 +39,8 @@ export class Puppet
 
   specify-outputs: -> []
 
+  pull: ->
+
   get-size: ->
     max = 0
     for sprite in @chain

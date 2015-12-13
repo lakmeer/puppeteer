@@ -72,6 +72,7 @@ links.push new Link p-node.outputs.next, puppet-node.inputs.next
 # Rendering
 
 draw = ->
+  puppet.pull!
   #raf draw
   workspace.clear!
   #puppet.draw workspace
