@@ -9,7 +9,7 @@ export delay = flip set-timeout
 
 export defer = delay 0
 
-export v2 = (x, y) -> { x, y }
+export v2 = (x, y) -> if y? then { x, y } else { x: x.x, y: x.y }
 
 export floor = Math.floor
 

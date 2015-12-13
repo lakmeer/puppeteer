@@ -9,7 +9,6 @@ keysymbols =
   67: \C
   86: \V
 
-
 export class KeyTrigger extends Trigger
 
   (keycode) ->
@@ -27,6 +26,11 @@ export class KeyTrigger extends Trigger
 
     document.add-event-listener \keyup, ({ which }) ~>
       if keycode is which then @set off
+
+  specify-inputs: -> []
+
+  specify-outputs: ->
+    [ { type: SIGNAL_TYPE_POKE, on-pull: ~> @state } ]
 
   set-mode: (mode) ->
     log mode

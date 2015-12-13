@@ -16,6 +16,11 @@ global.MOUSE_RIGHT = 2
 
 global.COLOR_BRIGHT_GREEN = \#0e3
 
+global.SIGNAL_TYPE_POKE = Symbol \poke
+global.SIGNAL_TYPE_NUMBER = Symbol \number
+global.SIGNAL_TYPE_GRAPHIC = Symbol \graphic
+global.SIGNAL_TYPE_TEXT = Symbol \text
+
 
 # Globally-available Service Locators
 

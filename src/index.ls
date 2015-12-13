@@ -47,13 +47,6 @@ left  = new MouseTrigger MOUSE_LEFT
 
 puppet = new Puppet
 
-z.on-state-change -> puppet.set \choke it
-x.on-state-change -> puppet.set \drop it
-c.on-state-change -> puppet.set \frustrate it
-v.on-state-change -> puppet.set \trash it
-t.on-state-change -> puppet.set \study it
-p.on-state-change -> puppet.set \drink it
-
 left.on-state-change  -> puppet.set \draw it
 #audio.on-state-change -> puppet.set \sing it
 

@@ -26,6 +26,19 @@ export class Puppet
     @state =
       current-sprite: @animations.look
 
+  specify-inputs: -> [
+    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \a
+    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \b
+    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \c
+    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \d
+    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \e
+    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \f
+    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \g
+    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \h
+  ]
+
+  specify-outputs: -> []
+
   get-size: ->
     max = 0
     for sprite in @chain

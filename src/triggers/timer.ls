@@ -19,6 +19,10 @@ export class TimerTrigger extends Trigger
 
     fn!
 
+  specify-inputs: -> []
+
+  specify-outputs: -> [ type: SIGNAL_TYPE_POKE, on-pull: -> @state ]
+
   stop: ->
     @active = no
 

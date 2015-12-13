@@ -15,3 +15,6 @@ export class Trigger
   on-state-change: (λ) ->
     @callback = λ
 
+  specify-inputs:  -> []
+  specify-outputs: -> []
+

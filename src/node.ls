@@ -15,15 +15,15 @@ export class Node
       signal: off
 
     @bounds  = new RectXYS   @pos, @size
-    @inputs  = new InputSet  this, inputs,  offset: @size/-2, pos: @pos, height: @size
-    @outputs = new OutputSet this, outputs, offset: @size/+2, pos: @pos, height: @size
+    @inputs  = new InputSet  @content.specify-inputs!,  offset: @size/-2, pos: @pos, height: @size
+    @outputs = new OutputSet @content.specify-outputs!, offset: @size/+2, pos: @pos, height: @size
 
   pull: ->
     @state.signal = @content.state
 
   draw: ({ ctx }) ->
 
-    @rep.draw!
+    @rep.draw @content
 
     ctx.draw-image @rep.canvas, @pos.x - @size/2 , @pos.y - @size/2, @size, @size
 
