@@ -1,9 +1,9 @@
 
 { id, log } = require \std
 
-bw = 10
-
 export class Representation
+
+  bw = 10
 
   (@target) ->
     @size ?= 100
@@ -11,8 +11,6 @@ export class Representation
     @canvas = document.create-element \canvas
     @canvas.width = @canvas.height = @size
     @ctx = @canvas.get-context \2d
-    @ctx.fill-style = \lightgrey
-    @ctx.fill-rect 0, 0, @size, @size
 
   draw: ->
     @draw-backing!
@@ -43,7 +41,6 @@ export class Representation
 
   set-mode: (mode) ->
     @state.mode = mode
-
 
   @NullRepresentation = new Representation { state: off }
 

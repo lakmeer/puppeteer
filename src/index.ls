@@ -55,7 +55,7 @@ nodes.push t-node = new Node content: t, rep: (new TimerRep t), size: 100, pos: 
 nodes.push p-node = new Node content: p, rep: (new TimerRep p), size: 100, pos: v2  65 615
 
 # Create sprite sources (full set: look draw choke drop frustrate sing study think trash drink)
-animations = mash do
+anim-nodes = mash do
   for name, i in <[ look draw choke drop frustrate sing ]>
     sprite  = new Sprite src: "assets/#{name}_01.png"
     graphic = new GraphicTrigger { sprite }
@@ -66,22 +66,20 @@ animations = mash do
 puppet = new Puppet
 nodes.push puppet-node = new Node content: puppet, rep: (new PuppetRep puppet), size: 180, pos: v2 515 860
 
-
 # Create links between them
+#links.push new Link z-node.outputs.next, anim-nodes.look.inputs.next
+links.push new Link x-node.outputs.next, anim-nodes.draw.inputs.next
+links.push new Link c-node.outputs.next, anim-nodes.choke.inputs.next
+links.push new Link t-node.outputs.next, anim-nodes.drop.inputs.next
+links.push new Link p-node.outputs.next, anim-nodes.frustrate.inputs.next
+links.push new Link v-node.outputs.next, anim-nodes.sing.inputs.next
 
-links.push new Link z-node.outputs.next, animations.look.inputs.next
-links.push new Link x-node.outputs.next, animations.draw.inputs.next
-links.push new Link c-node.outputs.next, animations.choke.inputs.next
-links.push new Link t-node.outputs.next, animations.drop.inputs.next
-links.push new Link p-node.outputs.next, animations.frustrate.inputs.next
-links.push new Link v-node.outputs.next, animations.sing.inputs.next
-
-links.push new Link animations.look.outputs.next,      puppet-node.inputs.next
-links.push new Link animations.draw.outputs.next,      puppet-node.inputs.next
-links.push new Link animations.choke.outputs.next,     puppet-node.inputs.next
-links.push new Link animations.drop.outputs.next,      puppet-node.inputs.next
-links.push new Link animations.frustrate.outputs.next, puppet-node.inputs.next
-links.push new Link animations.sing.outputs.next,      puppet-node.inputs.next
+links.push new Link anim-nodes.look.outputs.next,      puppet-node.inputs.next
+links.push new Link anim-nodes.draw.outputs.next,      puppet-node.inputs.next
+links.push new Link anim-nodes.choke.outputs.next,     puppet-node.inputs.next
+links.push new Link anim-nodes.drop.outputs.next,      puppet-node.inputs.next
+links.push new Link anim-nodes.frustrate.outputs.next, puppet-node.inputs.next
+links.push new Link anim-nodes.sing.outputs.next,      puppet-node.inputs.next
 
 
 # Rendering

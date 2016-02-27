@@ -15,4 +15,7 @@
   delaying the reaction by a from but preventing loops.
 
 - Do correct aspect scaling inside GraphicRep
+- Totally separate the actual graph from it's graphical management
+- Promote PortSet to the trigger itself
+- Allow Link representation to respond to state
 

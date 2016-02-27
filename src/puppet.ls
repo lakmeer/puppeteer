@@ -24,7 +24,7 @@ export class Puppet extends Trigger
         new Input { type }
 
   pull: ->
-    @inputs.map (.pull!)
+    @chain = @inputs.map (.pull!) .filter id
 
   get-size: ->
     return 200
@@ -34,15 +34,7 @@ export class Puppet extends Trigger
       if sprite.height > max then max = sprite.width
     return max
 
-  get-winning-sprite: ->
-    return blit-to: id
-    winner = @chain.0
-    for sprite, i in @chain when i > 0
-      if sprite.active
-        winner = sprite
-    return winner
-
   draw: ({ ctx, size, offset = v2 0 0 }) ->
-    winner = @get-winning-sprite!
-    winner.blit-to ctx, offset.x, offset.y + size - winner.height
+    if winner = @chain[* - 1]
+      winner.blit-to ctx, offset.x, offset.y + size - winner.height
 
