@@ -1,6 +1,8 @@
 
 { id, log } = require \std
 
+bw = 10
+
 export class Representation
 
   (@target) ->
@@ -13,10 +15,19 @@ export class Representation
     @ctx.fill-rect 0, 0, @size, @size
 
   draw: ->
-    @ctx.fill-style = @border-color!
-    @ctx.fill-rect 0, 0, @canvas.width, @canvas.height
+    @draw-backing!
+    @draw-border!
+
+  draw-backing: ->
     @ctx.fill-style = \white
-    @ctx.fill-rect 10, 10, @size - 20, @size - 20
+    @ctx.fill-rect 0, 0, @canvas.width, @canvas.height
+
+  draw-border: ->
+    @ctx.fill-style = @border-color!
+    @ctx.fill-rect 0, 0, @size, bw
+    @ctx.fill-rect 0, bw, bw, @size - bw
+    @ctx.fill-rect @size - bw, bw, bw, @size - bw
+    @ctx.fill-rect bw, @size - bw, @size - bw * 2, bw
 
   border-color: ->
     if @target.state

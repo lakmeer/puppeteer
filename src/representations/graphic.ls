@@ -9,7 +9,6 @@ export class GraphicRep extends Representation
   ->
     @size = 130
     super ...
-    log 'new GraphicRep', @target
 
   draw: (target) ->
     super ...
