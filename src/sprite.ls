@@ -10,6 +10,8 @@ export class Sprite extends Blitter
 
     @img = new Image
 
+    @size = v2 0 0
+
     @img.onload = ~>
       @width  = @canvas.width  = @img.width
       @height = @canvas.height = @img.height

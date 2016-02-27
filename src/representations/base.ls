@@ -4,7 +4,7 @@
 export class Representation
 
   (@target) ->
-    @size = 100
+    @size ?= 100
     @state = mode: INTERACTION_MODE_IDLE
     @canvas = document.create-element \canvas
     @canvas.width = @canvas.height = @size
