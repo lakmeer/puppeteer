@@ -60,6 +60,25 @@ nodes.push p-node = new Node content: p, rep: (new TimerRep p), size: 100, pos: 
 
 nodes.push puppet-node = new Node content: puppet, rep: (new PuppetRep puppet), inputs: 6, size: 180, pos: v2 450 260
 
+# Create sprite sources
+
+animations = mash do
+  for name in <[ choke draw drink drop frustrate look sing study think trash ]>
+    [ name, new Sprite src: "assets/#{name}_01.png" ]
+
+chain = [
+  animations.look
+  animations.draw
+  animations.choke
+  animations.drop
+  animations.frustrate
+  animations.sing
+  animations.study
+  animations.think
+  animations.trash
+  animations.drink
+]
+
 # Create links between them
 links.push new Link z-node.outputs.next, puppet-node.inputs.next
 links.push new Link x-node.outputs.next, puppet-node.inputs.next

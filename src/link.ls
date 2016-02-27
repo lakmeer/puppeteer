@@ -11,6 +11,7 @@ export class Link
   (@from, @to) ->
     @from.assign-link this
     @to.assign-link this
+    log @from.pull!
 
   draw: ({ ctx }) ->
     state = @from.pull!

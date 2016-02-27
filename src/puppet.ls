@@ -2,31 +2,11 @@
 { id, log, mash } = require \std
 
 { Sprite } = require \./sprite
+{ Input }  = require \./port
 
 export class Puppet
 
-  ->
-    @animations = mash do
-      for name in <[ choke draw drink drop frustrate look sing study think trash ]>
-        [ name, new Sprite src: "assets/#{name}_01.png" ]
-
-    @chain = [
-      @animations.look
-      @animations.draw
-      @animations.choke
-      @animations.drop
-      @animations.frustrate
-      @animations.sing
-      @animations.study
-      @animations.think
-      @animations.trash
-      @animations.drink
-    ]
-
-    @state =
-      current-sprite: @animations.look
-
-  specify-inputs: -> [
+  input-spec = [
     * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \a
     * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \b
     * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \c
@@ -37,11 +17,15 @@ export class Puppet
     * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \h
   ]
 
-  specify-outputs: -> []
+  ->
+    @inputs =
+      for { type, on-pull } in input-spec
+        new Input { type, on-pull }
 
   pull: ->
 
   get-size: ->
+    return 200
     max = 0
     for sprite in @chain
       if sprite.width  > max then max = sprite.width
@@ -49,6 +33,7 @@ export class Puppet
     return max
 
   get-winning-sprite: ->
+    return blit-to: id
     winner = @chain.0
     for sprite, i in @chain when i > 0
       if sprite.active

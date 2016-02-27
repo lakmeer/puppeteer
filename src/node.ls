@@ -15,8 +15,8 @@ export class Node
       signal: off
 
     @bounds  = new RectXYS   @pos, @size
-    @inputs  = new InputSet  @content.specify-inputs!,  offset: @size/-2, pos: @pos, height: @size
-    @outputs = new OutputSet @content.specify-outputs!, offset: @size/+2, pos: @pos, height: @size
+    @inputs  = new InputSet  @content.inputs,  offset: @size/-2, pos: @pos, height: @size
+    @outputs = new OutputSet @content.outputs, offset: @size/+2, pos: @pos, height: @size
 
   pull: ->
     @state.signal = @content.state
