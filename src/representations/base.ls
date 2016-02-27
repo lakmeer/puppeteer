@@ -20,7 +20,7 @@ export class Representation
 
   border-color: ->
     if @target.state
-      COLOR_BRIGHT_GREEN
+      COLOR_YELLOW
     else
       @mode-color @state.mode
 
@@ -33,4 +33,6 @@ export class Representation
   set-mode: (mode) ->
     @state.mode = mode
 
+
+  @NullRepresentation = new Representation { state: off }
 

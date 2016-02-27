@@ -45,8 +45,6 @@ p = new TimerTrigger time: 1.5, duty: 0.1
 left  = new MouseTrigger MOUSE_LEFT
 #audio = new MicTrigger
 
-puppet = new Puppet
-
 left.on-state-change  -> puppet.set \draw it
 #audio.on-state-change -> puppet.set \sing it
 
@@ -57,8 +55,6 @@ nodes.push c-node = new Node content: c, rep: (new KeyRep c),   size: 70,  pos: 
 nodes.push v-node = new Node content: v, rep: (new KeyRep v),   size: 70,  pos: v2 230 340
 nodes.push t-node = new Node content: t, rep: (new TimerRep t), size: 100, pos: v2  80 280
 nodes.push p-node = new Node content: p, rep: (new TimerRep p), size: 100, pos: v2  80 400
-
-nodes.push puppet-node = new Node content: puppet, rep: (new PuppetRep puppet), inputs: 6, size: 180, pos: v2 450 260
 
 # Create sprite sources
 
@@ -78,6 +74,11 @@ chain = [
   animations.trash
   animations.drink
 ]
+
+puppet = new Puppet chain: chain
+
+nodes.push puppet-node = new Node content: puppet, rep: (new PuppetRep puppet), inputs: 6, size: 180, pos: v2 450 260
+
 
 # Create links between them
 links.push new Link z-node.outputs.next, puppet-node.inputs.next

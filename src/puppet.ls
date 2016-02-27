@@ -7,22 +7,27 @@
 export class Puppet
 
   input-spec = [
-    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \a
-    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \b
-    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \c
-    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \d
-    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \e
-    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \f
-    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \g
-    * type: SIGNAL_TYPE_GRAPHIC, on-pull: -> log \h
+    * type: SIGNAL_TYPE_POKE
+    * type: SIGNAL_TYPE_POKE
+    * type: SIGNAL_TYPE_POKE
+    * type: SIGNAL_TYPE_POKE
+    * type: SIGNAL_TYPE_POKE
+    * type: SIGNAL_TYPE_POKE
+    * type: SIGNAL_TYPE_POKE
+    * type: SIGNAL_TYPE_POKE
   ]
 
-  ->
+  ({ @chain }) ->
     @inputs =
       for { type, on-pull } in input-spec
-        new Input { type, on-pull }
+        new Input { type }
+
+    @animations = { [ k, true ] for k, v of @chain }
+
+    log @animations, @chain
 
   pull: ->
+    @inputs.map (.pull!)
 
   get-size: ->
     return 200
@@ -41,8 +46,7 @@ export class Puppet
     return winner
 
   set: (sprite-name, state) ->
-    #log \set sprite-name, state
-    @animations[sprite-name].active = state
+    @animations[sprite-name]?.active = state
 
   draw: ({ ctx, size, offset = v2 0 0 }) ->
     winner = @get-winning-sprite!

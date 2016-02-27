@@ -1,9 +1,6 @@
 
 { id, log, hyp, random-from } = require \std
 
-COLOR_DARK_GREEN = \green
-COLOR_BRIGHT_GREEN = \#0e3
-
 export class Link
 
   bend-strength = 50
@@ -11,7 +8,9 @@ export class Link
   (@from, @to) ->
     @from.assign-link this
     @to.assign-link this
-    log @from.pull!
+
+    if @from.type isnt @to.type
+      console.error "Link::new - can't join ports of disparate types! - FROM:", @from.type, "| TO:", @to.type
 
   draw: ({ ctx }) ->
     state = @from.pull!

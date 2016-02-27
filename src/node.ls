@@ -1,14 +1,14 @@
 
 { id, log, v2 } = require \std
 
-{ Graphic }  = require \./graphic
+{ Representation } = require \./representations/base
 { RectXYS }  = require \./rect
 { InputSet, OutputSet } = require \./input-set
 
 
 export class Node
 
-  ({ @content, @pos, @size, inputs = 1, outputs = 1, @rep = new Graphic }) ->
+  ({ @content, @pos, @size, inputs = 1, outputs = 1, @rep = Representation.NullRepresentation }) ->
 
     @state =
       mode: INTERACTION_MODE_IDLE

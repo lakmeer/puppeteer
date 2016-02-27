@@ -1,30 +1,31 @@
 
-{ id, log } = require \std
+{ id, log, delay } = require \std
 
 { Trigger } = require \./base
 { Output } = require \../port
 
 export class TimerTrigger extends Trigger
 
-  output-spec = [ { type: SIGNAL_TYPE_POKE, on-pull: ~> log \active; @active } ]
+  output-spec = [ { type: SIGNAL_TYPE_POKE, on-pull: -> @state } ]
 
   ({ @time, @duty = 0.5 }) ->
     super ...
+    @generate-ports { output-spec }
+    @state = off
+    @active = no
+    @start!
 
+  tick: ~>
+    @set on
+    delay @time * 1000 * @duty, this~set-off,
+    if @active then delay @time * 1000, @tick
+
+  set-off: ->
+    @set off
+
+  start: ->
     @active = yes
-
-    @outputs =
-      for { type, on-pull } in output-spec
-        new Output { type, on-pull.bind this }
-
-    set-off = ~> @set off
-
-    fn = ~>
-      @set on
-      set-timeout set-off, @time * 1000 * @duty
-      if @active then set-timeout fn, @time * 1000
-
-    fn!
+    @tick!
 
   stop: ->
     @active = no
