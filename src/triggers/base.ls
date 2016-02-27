@@ -14,7 +14,12 @@ export class Trigger
   set: (state) ->
     @state = state
     @callback state
-    GlobalServices.Poke.poke!
+    # DONT automatically poke upon state change. REAL 'Triggers' are allowed
+    # to do this, but while the naming is still screwed up, 'Trigger' is still
+    # the generic type. It can be subclassed later if necessary. For now, sub-
+    # classes of Trigger that are ACTUALLY triggers should do this manually.
+    #
+    # GlobalServices.Poke.poke!
 
   on-state-change: (λ) ->
     @callback = λ

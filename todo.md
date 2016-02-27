@@ -9,5 +9,10 @@
   becomes just the subtype of Nodes which have no inputs. They probably dont
   event need to be distinct in code, maybe just in the way they're organised.
 
+  - The ACTUAL reason triggers are different - they are allowed to Poke on
+  state change. Other types of nodes should not poke for internal reasons.
+  If this doesn't work out, move to a 'poke next frame' flag for global pokes,
+  delaying the reaction by a from but preventing loops.
+
 - Do correct aspect scaling inside GraphicRep
 

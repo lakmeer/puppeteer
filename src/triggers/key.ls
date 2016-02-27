@@ -19,3 +19,7 @@ export class KeyTrigger extends Trigger
     document.add-event-listener \keyup, ({ which }) ~>
       if @keycode is which then @set off
 
+  set: ->
+    GlobalServices.Poke.poke!
+    super ...
+

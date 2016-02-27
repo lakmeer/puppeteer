@@ -20,6 +20,10 @@ export class TimerTrigger extends Trigger
     delay @time * 1000 * @duty, this~set-off,
     if @active then delay @time * 1000, @tick
 
+  set: ->
+    GlobalServices.Poke.poke!
+    super ...
+
   set-off: ->
     @set off
 

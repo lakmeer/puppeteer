@@ -12,10 +12,8 @@ export class GraphicRep extends Representation
     log 'new GraphicRep', @target
 
   draw: (target) ->
-    @ctx.fill-style = \black
-    @ctx.fill-rect 0, 0, @size, @size
-    @ctx.global-alpha = 0.3
     super ...
-    @ctx.global-alpha = 1
+    @ctx.global-alpha = if target.state then 1 else 0.3
     @ctx.draw-image target.sprite.canvas, 10, 10, @size - 20, (target.sprite.size.y / target.sprite.size.x) * (@size - 20)
+    @ctx.global-alpha = 1
 
