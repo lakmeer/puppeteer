@@ -8,8 +8,8 @@ class Port
 
   assign-link: (@link) ->
   move-to: (pos) -> if pos then @pos.x = pos.x; @pos.y = pos.y
-  push: -> @link?.to.push!
-  pull: -> @link?.from.pull!
+  push: -> @link?.push-to!
+  pull: -> @link?.pull-from!
 
 export class Input  extends Port
   ({ on-push }) ->

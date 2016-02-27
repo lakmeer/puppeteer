@@ -82,6 +82,11 @@ links.push new Link anim-nodes.frustrate.outputs.next, puppet-node.inputs.next
 links.push new Link anim-nodes.sing.outputs.next,      puppet-node.inputs.next
 
 
+# Testing incorrect links
+
+links.push new Link z-node.outputs.next, puppet-node.inputs.next
+
+
 # Rendering
 
 draw = ->

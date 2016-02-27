@@ -29,11 +29,11 @@ export class Node
 
     ctx.fill-style = \blue
     for input, i in @inputs.ports
-      ctx.fill-rect input.pos.x, input.pos.y - 10, 20, 20
+      ctx.fill-rect input.pos.x - 3, input.pos.y - 10, 13, 20
 
     ctx.fill-style = \magenta
     for output, j in @outputs.ports
-      ctx.fill-rect output.pos.x - 20, output.pos.y - 10, 20, 20
+      ctx.fill-rect output.pos.x - 10, output.pos.y - 10, 13, 20
 
   set-mode: (mode) ->
     @rep.set-mode mode

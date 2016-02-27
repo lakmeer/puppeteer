@@ -16,10 +16,12 @@ global.KEY_V = 86
 global.MOUSE_LEFT = 0
 global.MOUSE_RIGHT = 2
 
-global.COLOR_DARK_GREEN = \green
+global.COLOR_DARK_GREEN   = \green
 global.COLOR_BRIGHT_GREEN = \#0e3
-global.COLOR_YELLOW = \#ff0
-global.COLOR_RED    = \#f23
+global.COLOR_YELLOW       = \#ff0
+global.COLOR_RED          = \#f23
+global.COLOR_DARK_RED     = \#812
+global.COLOR_BRIGHT_RED   = \#f89
 
 global.SIGNAL_TYPE_POKE = Symbol \poke
 global.SIGNAL_TYPE_NUMBER = Symbol \number

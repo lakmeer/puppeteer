@@ -3,7 +3,7 @@
 
 determine-status = (a, b) ->
   if a.type isnt b.type
-    console.error "Link::new - can't join ports of disparate types! - FROM:", a.type, "| TO:", b.type
+    console.warn "Link::new - can't join ports of disparate types! - FROM:", a.type, "| TO:", b.type
     LINK_STATUS_MISMATCH
   else
     LINK_STATUS_OK
@@ -17,25 +17,46 @@ export class Link
     @from.assign-link this
     @to.assign-link this
     @status = determine-status @from, @to
+    @signal-strength = 0
 
-  get-color: ->
-    if @status isnt LINK_STATUS_OK
-      COLOR_RED
-    else if @state
-      COLOR_BRIGHT_GREEN
-    else
-      COLOR_DARK_GREEN
+  push-to:   -> if @status is LINK_STATUS_OK then @to.push!   else null
+  pull-from: -> if @status is LINK_STATUS_OK then @from.pull! else null
+
+  get-status-colors: ->
+    switch @status
+    | LINK_STATUS_OK => [ COLOR_DARK_GREEN, COLOR_BRIGHT_GREEN ]
+    | otherwise      => [ COLOR_RED, COLOR_BRIGHT_RED ]
+
+  infer-signal-strength: ->
+    @signal-strength =
+      switch @from.type
+      | SIGNAL_TYPE_POKE    => (if @from.pull! then 1 else 0)
+      | SIGNAL_TYPE_GRAPHIC => (if @from.pull! then 1 else 0)
+      | otherise => 0.5
 
   draw: ({ ctx }) ->
-    state = @from.pull!
     d = hyp @to.pos, @from.pos
     d = @to.pos.x - @from.pos.x
     b = if d <= bend-strength then bend-strength * ((abs d)/bend-strength)**1.4 else bend-strength
-    ctx.stroke-style = @get-color!
+    @infer-signal-strength!
+
+    [ base-color, power-color ] = @get-status-colors!
+
     ctx.line-width = 5
+    ctx.stroke-style = base-color
+
     ctx.begin-path!
     ctx.move-to @from.pos.x, @from.pos.y
     ctx.bezier-curve-to @from.pos.x + b, @from.pos.y, @to.pos.x - b, @to.pos.y, @to.pos.x, @to.pos.y
     ctx.stroke!
-    ctx.close-path!
+
+    ctx.global-alpha = @signal-strength
+    ctx.stroke-style = power-color
+
+    ctx.begin-path!
+    ctx.move-to @from.pos.x, @from.pos.y
+    ctx.bezier-curve-to @from.pos.x + b, @from.pos.y, @to.pos.x - b, @to.pos.y, @to.pos.x, @to.pos.y
+    ctx.stroke!
+
+    ctx.global-alpha = 1
 
