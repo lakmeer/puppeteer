@@ -24,7 +24,7 @@ global.COLOR_DARK_RED     = \#812
 global.COLOR_BRIGHT_RED   = \#f89
 global.COLOR_DARK_BLUE    = \#118
 global.COLOR_BRIGHT_BLUE  = \#48f
-global.COLOR_PURPLE       = \#d4d
+global.COLOR_PURPLE       = \#929
 global.COLOR_MAGENTA      = \#f3f
 
 global.SIGNAL_TYPE_POKE    = Symbol \poke

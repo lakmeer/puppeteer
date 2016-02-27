@@ -18,4 +18,5 @@
 - Totally separate the actual graph from it's graphical management
 - Promote PortSet to the trigger itself
 - Allow Link representation to respond to state
+- Pull Link view out of logical class
 

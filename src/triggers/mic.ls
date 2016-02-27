@@ -29,6 +29,7 @@ export class MicTrigger extends Trigger
     @buffer-length = @analyser.frequency-bin-count
     @data-array    = new Uint8Array @buffer-length
 
+  start: ->
     get-microphone (mic-stream) ~>
       @mic = @audio.create-media-stream-source mic-stream
       @mic.connect @analyser

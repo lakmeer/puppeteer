@@ -8,7 +8,7 @@ export class TimerTrigger extends Trigger
 
   output-spec = [ { type: SIGNAL_TYPE_POKE, on-pull: -> @state } ]
 
-  ({ @time, @duty = 0.5 }) ->
+  ({ @time, @duty = 0.5, @offset = 0 }) ->
     super ...
     @generate-ports { output-spec }
     @state = off
@@ -29,8 +29,10 @@ export class TimerTrigger extends Trigger
 
   start: ->
     @active = yes
-    @tick!
+    delay (@time - @offset) * 1000, ~>
+      this~tick!
 
   stop: ->
     @active = no
+    @set off
 

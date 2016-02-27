@@ -27,7 +27,6 @@ export class Puppet extends Trigger
     @chain = @inputs.map (.pull!) .filter id
 
   get-size: ->
-    return 200
     max = 0
     for sprite in @chain
       if sprite.width  > max then max = sprite.width

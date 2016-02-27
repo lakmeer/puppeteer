@@ -26,9 +26,9 @@ export class Link
     switch @status
     | LINK_STATUS_OK =>
       switch @to.type
-      | SIGNAL_TYPE_NUMBER => [ COLOR_RED, COLOR_BRIGHT_BLUE ]
+      | SIGNAL_TYPE_NUMBER  => [ COLOR_PURPLE, COLOR_MAGENTA ]
       | SIGNAL_TYPE_GRAPHIC => [ COLOR_DARK_BLUE, COLOR_BRIGHT_BLUE ]
-      | otherwise => [ COLOR_DARK_GREEN, COLOR_BRIGHT_GREEN ]
+      | otherwise           => [ COLOR_DARK_GREEN, COLOR_BRIGHT_GREEN ]
     | otherwise => [ COLOR_RED, COLOR_BRIGHT_RED ]
 
   infer-signal-strength: ->

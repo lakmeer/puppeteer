@@ -8,7 +8,7 @@
 
 port-color = ({ type }) ->
   switch type
-  | SIGNAL_TYPE_NUMBER => COLOR_PURPLE
+  | SIGNAL_TYPE_NUMBER => COLOR_MAGENTA
   | SIGNAL_TYPE_GRAPHIC => COLOR_BRIGHT_BLUE
   | otherwise =>  COLOR_BRIGHT_GREEN
 
@@ -35,11 +35,11 @@ export class VisualNode
 
     for input, i in @inputs.ports
       ctx.fill-style = port-color input
-      ctx.fill-rect input.pos.x - 3, input.pos.y - 10, 13, 20
+      ctx.fill-rect input.pos.x - 3, input.pos.y - 10, 8, 20
 
     for output, j in @outputs.ports
       ctx.fill-style = port-color output
-      ctx.fill-rect output.pos.x - 10, output.pos.y - 10, 13, 20
+      ctx.fill-rect output.pos.x - 5, output.pos.y - 10, 8, 20
 
   set-mode: (mode) ->
     @rep.set-mode mode
