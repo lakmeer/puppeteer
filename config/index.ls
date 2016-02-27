@@ -22,11 +22,15 @@ global.COLOR_YELLOW       = \#ff0
 global.COLOR_RED          = \#f23
 global.COLOR_DARK_RED     = \#812
 global.COLOR_BRIGHT_RED   = \#f89
+global.COLOR_DARK_BLUE    = \#118
+global.COLOR_BRIGHT_BLUE  = \#48f
+global.COLOR_PURPLE       = \#d4d
+global.COLOR_MAGENTA      = \#f3f
 
-global.SIGNAL_TYPE_POKE = Symbol \poke
-global.SIGNAL_TYPE_NUMBER = Symbol \number
+global.SIGNAL_TYPE_POKE    = Symbol \poke
+global.SIGNAL_TYPE_NUMBER  = Symbol \number
 global.SIGNAL_TYPE_GRAPHIC = Symbol \graphic
-global.SIGNAL_TYPE_TEXT = Symbol \text
+global.SIGNAL_TYPE_TEXT    = Symbol \text
 
 
 # Globally-available Service Locators

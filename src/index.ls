@@ -5,7 +5,7 @@
 
 { DragMonitor } = require \./drag-monitor
 { Workspace }   = require \./workspace
-{ Node }        = require \./node
+{ VisualNode }  = require \./visual-node
 { Link }        = require \./link
 { Sprite }      = require \./sprite
 
@@ -17,6 +17,7 @@
 { TimerTrigger }   = require \./triggers/timer
 { GraphicTrigger } = require \./triggers/graphic
 
+{ MicRep }     = require \./representations/mic
 { KeyRep }     = require \./representations/key
 { TimerRep }   = require \./representations/timer
 { PuppetRep }  = require \./representations/puppet
@@ -40,51 +41,64 @@ v = new KeyTrigger KEY_V
 t = new TimerTrigger time: 1
 p = new TimerTrigger time: 1.5, duty: 0.1
 
-#left  = new MouseTrigger MOUSE_LEFT
-#audio = new MicTrigger
+left = new MouseTrigger MOUSE_LEFT
+mic  = new MicTrigger
 
-#left.on-state-change  -> puppet.set \draw it
-#audio.on-state-change -> puppet.set \sing it
+nodes.push mic-node  = new VisualNode content: mic, rep: (new MicRep mic), size: 70, pos: v2 50, 800
+nodes.push left-node = new VisualNode content: mic, rep: (new MouseRep left), size: 70, pos: v2 50, 100
 
 # Assign logical nodes to representative nodes
-nodes.push z-node = new Node content: z, rep: (new KeyRep z),   size: 70,  pos: v2 50 100
-nodes.push x-node = new Node content: x, rep: (new KeyRep x),   size: 70,  pos: v2 50 180
-nodes.push c-node = new Node content: c, rep: (new KeyRep c),   size: 70,  pos: v2 50 260
-nodes.push v-node = new Node content: v, rep: (new KeyRep v),   size: 70,  pos: v2 50 340
-nodes.push t-node = new Node content: t, rep: (new TimerRep t), size: 100, pos: v2  65 475
-nodes.push p-node = new Node content: p, rep: (new TimerRep p), size: 100, pos: v2  65 615
+nodes.push z-node = new VisualNode content: z, rep: (new KeyRep z),   size: 70,  pos: v2 50 100
+nodes.push x-node = new VisualNode content: x, rep: (new KeyRep x),   size: 70,  pos: v2 50 180
+nodes.push c-node = new VisualNode content: c, rep: (new KeyRep c),   size: 70,  pos: v2 50 260
+nodes.push v-node = new VisualNode content: v, rep: (new KeyRep v),   size: 70,  pos: v2 50 340
+nodes.push t-node = new VisualNode content: t, rep: (new TimerRep t), size: 100, pos: v2  65 475
+nodes.push p-node = new VisualNode content: p, rep: (new TimerRep p), size: 100, pos: v2  65 615
 
 # Create sprite sources (full set: look draw choke drop frustrate sing study think trash drink)
 anim-nodes = mash do
   for name, i in <[ look draw choke drop frustrate sing ]>
     sprite  = new Sprite src: "assets/#{name}_01.png"
     graphic = new GraphicTrigger { sprite }
-    nodes.push node = new Node content: graphic, rep: (new GraphicRep graphic), size: 130, pos: v2 250 70 + 140 * i
+    nodes.push node = new VisualNode content: graphic, rep: (new GraphicRep graphic), size: 130, pos: v2 250 70 + 140 * i
     [ name, node ]
 
 # Create Puppet
 puppet = new Puppet
-nodes.push puppet-node = new Node content: puppet, rep: (new PuppetRep puppet), size: 180, pos: v2 515 860
+nodes.push puppet-node = new VisualNode content: puppet, rep: (new PuppetRep puppet), size: 180, pos: v2 515 860
 
 # Create links between them
-#links.push new Link z-node.outputs.next, anim-nodes.look.inputs.next
-links.push new Link x-node.outputs.next, anim-nodes.draw.inputs.next
-links.push new Link c-node.outputs.next, anim-nodes.choke.inputs.next
-links.push new Link t-node.outputs.next, anim-nodes.drop.inputs.next
-links.push new Link p-node.outputs.next, anim-nodes.frustrate.inputs.next
-links.push new Link v-node.outputs.next, anim-nodes.sing.inputs.next
-
-links.push new Link anim-nodes.look.outputs.next,      puppet-node.inputs.next
-links.push new Link anim-nodes.draw.outputs.next,      puppet-node.inputs.next
-links.push new Link anim-nodes.choke.outputs.next,     puppet-node.inputs.next
-links.push new Link anim-nodes.drop.outputs.next,      puppet-node.inputs.next
-links.push new Link anim-nodes.frustrate.outputs.next, puppet-node.inputs.next
-links.push new Link anim-nodes.sing.outputs.next,      puppet-node.inputs.next
+links.push VisualNode.link anim-nodes.look, puppet-node
+links .= concat VisualNode.chain x-node, anim-nodes.draw, puppet-node
+links .= concat VisualNode.chain c-node, anim-nodes.choke, puppet-node
+links .= concat VisualNode.chain t-node, anim-nodes.drop, puppet-node
+links .= concat VisualNode.chain p-node, anim-nodes.frustrate, puppet-node
+links .= concat VisualNode.chain mic-node, anim-nodes.sing, puppet-node
 
 
 # Testing incorrect links
 
+{ Trigger } = require \./triggers/base
+{ Representation } = require \./representations/base
+
+class Shim extends Trigger
+
+  input-spec = [ { type: SIGNAL_TYPE_NUMBER, on-push: id } ]
+
+  ->
+    super ...
+    @generate-ports { input-spec }
+
+class ShimRep extends Representation
+  ->
+    super ...
+
+shim = new Shim
+
+nodes.push shim-node = new VisualNode content: shim, rep: (new ShimRep shim), size: 50, pos: v2 50, 900
+
 links.push new Link z-node.outputs.next, puppet-node.inputs.next
+links.push new Link mic-node.outputs.next, shim-node.inputs.next
 
 
 # Rendering

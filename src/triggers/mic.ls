@@ -6,14 +6,23 @@
 
 export class MicTrigger extends Trigger
 
-  SMOOTHING = 5
-  THRESHOLD = 1.1
+  SMOOTHING = 2
+
+  output-spec = [
+    { type: SIGNAL_TYPE_POKE,   on-pull: -> @state }
+    { type: SIGNAL_TYPE_NUMBER, on-pull: -> @value }
+  ]
 
   ->
+    super ...
+
     @running = no
     @audio   = new AudioContext
     @hist    = []
     @avg     = 0
+    @threshold = 1.1
+
+    @generate-ports { output-spec }
 
     @analyser = @audio.create-analyser!
     @analyser.fft-size = 2048
@@ -43,15 +52,9 @@ export class MicTrigger extends Trigger
 
     for p in @hist => avg += p
     avg /= SMOOTHING
-    @set avg > THRESHOLD
+    @set avg > @threshold
     @avg = avg
+    @value = @avg / @threshold
 
-  draw: ({ ctx, size }) ->
-    ctx.fill-style = \grey
-    ctx.fill-rect 0 0 size, 5
-    ctx.fill-style = \lightgrey
-    ctx.fill-rect 0 0 size/2 * THRESHOLD, 5
-    ctx.fill-style = if @state then \red else \blue
-    ctx.fill-rect 0 0 size/2 * @avg, 5
-    ctx.global-alpha = 1
+    GlobalServices.Poke.poke!
 

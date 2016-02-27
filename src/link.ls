@@ -24,15 +24,20 @@ export class Link
 
   get-status-colors: ->
     switch @status
-    | LINK_STATUS_OK => [ COLOR_DARK_GREEN, COLOR_BRIGHT_GREEN ]
-    | otherwise      => [ COLOR_RED, COLOR_BRIGHT_RED ]
+    | LINK_STATUS_OK =>
+      switch @to.type
+      | SIGNAL_TYPE_NUMBER => [ COLOR_RED, COLOR_BRIGHT_BLUE ]
+      | SIGNAL_TYPE_GRAPHIC => [ COLOR_DARK_BLUE, COLOR_BRIGHT_BLUE ]
+      | otherwise => [ COLOR_DARK_GREEN, COLOR_BRIGHT_GREEN ]
+    | otherwise => [ COLOR_RED, COLOR_BRIGHT_RED ]
 
   infer-signal-strength: ->
     @signal-strength =
       switch @from.type
       | SIGNAL_TYPE_POKE    => (if @from.pull! then 1 else 0)
       | SIGNAL_TYPE_GRAPHIC => (if @from.pull! then 1 else 0)
-      | otherise => 0.5
+      | SIGNAL_TYPE_NUMBER  => @from.pull!
+      | otherwise => 1
 
   draw: ({ ctx }) ->
     d = hyp @to.pos, @from.pos

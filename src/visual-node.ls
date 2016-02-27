@@ -4,9 +4,15 @@
 { Representation } = require \./representations/base
 { RectXYS } = require \./rect
 { InputSet, OutputSet } = require \./port-set
+{ Link }        = require \./link
 
+port-color = ({ type }) ->
+  switch type
+  | SIGNAL_TYPE_NUMBER => COLOR_PURPLE
+  | SIGNAL_TYPE_GRAPHIC => COLOR_BRIGHT_BLUE
+  | otherwise =>  COLOR_BRIGHT_GREEN
 
-export class Node
+export class VisualNode
 
   ({ @content, @pos, @size, @rep = Representation.NullRepresentation }) ->
 
@@ -27,12 +33,12 @@ export class Node
 
     ctx.draw-image @rep.canvas, @pos.x - @size/2 , @pos.y - @size/2, @size, @size
 
-    ctx.fill-style = \blue
     for input, i in @inputs.ports
+      ctx.fill-style = port-color input
       ctx.fill-rect input.pos.x - 3, input.pos.y - 10, 13, 20
 
-    ctx.fill-style = \magenta
     for output, j in @outputs.ports
+      ctx.fill-style = port-color output
       ctx.fill-rect output.pos.x - 10, output.pos.y - 10, 13, 20
 
   set-mode: (mode) ->
@@ -57,4 +63,14 @@ export class Node
 
   bounds-contains: (point) ->
     @bounds.contains point
+
+  @link = (a, b) ->
+    new Link a.outputs.next, b.inputs.next
+
+  @chain = (...nodes) ->
+    for i from 0 to nodes.length - 2
+      a = nodes[i]
+      b = nodes[i+1]
+      new Link a.outputs.next, b.inputs.next
+
 
