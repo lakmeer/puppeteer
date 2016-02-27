@@ -21,8 +21,8 @@ export class Trigger
 
   generate-ports: ({ input-spec = [], output-spec = [] }) ->
     @inputs =
-      for { type, on-pull } in input-spec
-        new Input { type, on-pull: on-pull.bind this }
+      for { type, on-push } in input-spec
+        new Input { type, on-push: on-push.bind this }
 
     @outputs =
       for { type, on-pull } in output-spec

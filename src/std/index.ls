@@ -41,3 +41,5 @@ export load-image = (src, λ = id) ->
   image.onload = λ
   return image
 
+export abs = Math.abs
+

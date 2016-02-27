@@ -7,22 +7,20 @@
 { Workspace }   = require \./workspace
 { Node }        = require \./node
 { Link }        = require \./link
-{ InputSet }    = require \./input-set
 { Sprite }      = require \./sprite
-
-{ Blitter } = require \./blitter
 
 { Puppet } = require \./puppet
 
-{ KeyTrigger }   = require \./triggers/key
-{ MicTrigger }   = require \./triggers/mic
-{ MouseTrigger } = require \./triggers/mouse
-{ TimerTrigger } = require \./triggers/timer
+{ KeyTrigger }     = require \./triggers/key
+{ MicTrigger }     = require \./triggers/mic
+{ MouseTrigger }   = require \./triggers/mouse
+{ TimerTrigger }   = require \./triggers/timer
+{ GraphicTrigger } = require \./triggers/graphic
 
-{ KeyRep }    = require \./representations/key
-{ TimerRep }  = require \./representations/timer
-{ PuppetRep } = require \./representations/puppet
-
+{ KeyRep }     = require \./representations/key
+{ TimerRep }   = require \./representations/timer
+{ PuppetRep }  = require \./representations/puppet
+{ GraphicRep } = require \./representations/graphic
 
 
 # Setup
@@ -42,51 +40,48 @@ v = new KeyTrigger KEY_V
 t = new TimerTrigger time: 1
 p = new TimerTrigger time: 1.5, duty: 0.1
 
-left  = new MouseTrigger MOUSE_LEFT
+#left  = new MouseTrigger MOUSE_LEFT
 #audio = new MicTrigger
 
-left.on-state-change  -> puppet.set \draw it
+#left.on-state-change  -> puppet.set \draw it
 #audio.on-state-change -> puppet.set \sing it
 
 # Assign logical nodes to representative nodes
-nodes.push z-node = new Node content: z, rep: (new KeyRep z),   size: 70,  pos: v2 230 100
-nodes.push x-node = new Node content: x, rep: (new KeyRep x),   size: 70,  pos: v2 230 180
-nodes.push c-node = new Node content: c, rep: (new KeyRep c),   size: 70,  pos: v2 230 260
-nodes.push v-node = new Node content: v, rep: (new KeyRep v),   size: 70,  pos: v2 230 340
-nodes.push t-node = new Node content: t, rep: (new TimerRep t), size: 100, pos: v2  80 280
-nodes.push p-node = new Node content: p, rep: (new TimerRep p), size: 100, pos: v2  80 400
+nodes.push z-node = new Node content: z, rep: (new KeyRep z),   size: 70,  pos: v2 50 100
+nodes.push x-node = new Node content: x, rep: (new KeyRep x),   size: 70,  pos: v2 50 180
+nodes.push c-node = new Node content: c, rep: (new KeyRep c),   size: 70,  pos: v2 50 260
+nodes.push v-node = new Node content: v, rep: (new KeyRep v),   size: 70,  pos: v2 50 340
+nodes.push t-node = new Node content: t, rep: (new TimerRep t), size: 100, pos: v2  65 475
+nodes.push p-node = new Node content: p, rep: (new TimerRep p), size: 100, pos: v2  65 615
 
-# Create sprite sources
-
+# Create sprite sources (full set: look draw choke drop frustrate sing study think trash drink)
 animations = mash do
-  for name in <[ choke draw drink drop frustrate look sing study think trash ]>
-    [ name, new Sprite src: "assets/#{name}_01.png" ]
+  for name, i in <[ look draw choke drop frustrate sing ]>
+    sprite  = new Sprite src: "assets/#{name}_01.png"
+    graphic = new GraphicTrigger { sprite }
+    nodes.push node = new Node content: graphic, rep: (new GraphicRep graphic), size: 130, pos: v2 250 70 + 140 * i
+    [ name, node ]
 
-chain = [
-  animations.look
-  animations.draw
-  animations.choke
-  animations.drop
-  animations.frustrate
-  animations.sing
-  animations.study
-  animations.think
-  animations.trash
-  animations.drink
-]
-
-puppet = new Puppet chain: chain
-
-nodes.push puppet-node = new Node content: puppet, rep: (new PuppetRep puppet), inputs: 6, size: 180, pos: v2 450 260
+# Create Puppet
+puppet = new Puppet
+nodes.push puppet-node = new Node content: puppet, rep: (new PuppetRep puppet), size: 180, pos: v2 515 860
 
 
 # Create links between them
-links.push new Link z-node.outputs.next, puppet-node.inputs.next
-links.push new Link x-node.outputs.next, puppet-node.inputs.next
-links.push new Link c-node.outputs.next, puppet-node.inputs.next
-links.push new Link t-node.outputs.next, puppet-node.inputs.next
-links.push new Link v-node.outputs.next, puppet-node.inputs.next
-links.push new Link p-node.outputs.next, puppet-node.inputs.next
+
+links.push new Link z-node.outputs.next, animations.look.inputs.next
+links.push new Link x-node.outputs.next, animations.draw.inputs.next
+links.push new Link c-node.outputs.next, animations.choke.inputs.next
+links.push new Link t-node.outputs.next, animations.drop.inputs.next
+links.push new Link p-node.outputs.next, animations.frustrate.inputs.next
+links.push new Link v-node.outputs.next, animations.sing.inputs.next
+
+links.push new Link animations.look.outputs.next,      puppet-node.inputs.next
+links.push new Link animations.draw.outputs.next,      puppet-node.inputs.next
+links.push new Link animations.choke.outputs.next,     puppet-node.inputs.next
+links.push new Link animations.drop.outputs.next,      puppet-node.inputs.next
+links.push new Link animations.frustrate.outputs.next, puppet-node.inputs.next
+links.push new Link animations.sing.outputs.next,      puppet-node.inputs.next
 
 
 # Rendering

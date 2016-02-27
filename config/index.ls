@@ -5,6 +5,8 @@ global.INTERACTION_MODE_IDLE   = Symbol \idle
 global.INTERACTION_MODE_HOT    = Symbol \hot
 global.INTERACTION_MODE_ACTIVE = Symbol \active
 
+global.LINK_STATUS_OK       = Symbol \ok
+global.LINK_STATUS_MISMATCH = Symbol \type-mismatch
 
 global.KEY_Z = 90
 global.KEY_X = 88
