@@ -85,6 +85,16 @@ io.on('connection', function (socket) {
     });
   });
 
+  socket.on('load', function (name) {
+    fs.readFile(sceneDir(name), 'utf8', function (err, data) {
+      if (err) {
+        log('ERROR', err);
+      } else {
+        socket.emit('load-complete', name, data);
+      }
+    });
+  });
+
   if (Config.emulateInputEvents) {
     setInterval(dispatchEmulatedInputEvent(socket), 500);
   }

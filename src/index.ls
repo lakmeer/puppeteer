@@ -107,14 +107,10 @@ construct-test-scene = ->
 deserialise-scene = (scene-data) ->
 
 
-
 # Scene Walker
 
-log 'Walking scene:'
-
 walk = (node) ->
-
-  json =
+  return do
     type: node@@display-name
     state: node.serialise-self!
     incoming:
@@ -124,13 +120,13 @@ walk = (node) ->
         else
           null
 
-  return json
+#construct-test-scene!
+#scene = JSON.stringify (walk puppet), null, 2
+#GlobalServices.SceneLibrary.save \test-scene, scene
 
-construct-test-scene!
-
-scene = JSON.stringify (walk puppet), null, 2
-
-GlobalServices.SceneLibrary.save \test-scene, scene
+GlobalServices.SceneLibrary.load \test-scene, (data) ->
+  log 'Load:', data
+  console.warn 'TODO: Deserialise into node graph'
 
 
 # Render when graph updates

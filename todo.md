@@ -23,6 +23,7 @@
 - Serialising:
   - Track all nodes created
   - Start serialisation walk for every node with no outputs (this includes Puppet)
+- Deserialise function
 
 
 ### Server
