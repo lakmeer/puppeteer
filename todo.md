@@ -18,5 +18,11 @@
 - Totally separate the actual graph from it's graphical management
 - Promote PortSet to the trigger itself
 - Allow Link representation to respond to state
+- Implement loss-of-event-source messaging
 - Pull Link view out of logical class
+
+
+### Server
+
+- Work out (/ask sreeram) how to statically link libwebsockets
 
