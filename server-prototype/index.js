@@ -10,14 +10,17 @@ var fs = require('fs');
 
 var Config = {
   port: 9000,
-  publicDir: '/../public/'
+  publicDir: '/../public',
+  sceneDir: '/scenes',
+  emulateInputEvents: true
 };
 
 
 // Helpers
 
 function log () { console.log.apply(console, arguments); }
-function publicDir (url) { return __dirname + Config.publicDir + url }
+function publicDir (url) { return __dirname + Config.publicDir + '/' + url; }
+function sceneDir (name) { return __dirname + Config.sceneDir  + '/' + name + '.json'; }
 function randomFrom (list) { return list[ Math.floor(Math.random() * list.length) ]; }
 
 // Functions
@@ -35,6 +38,10 @@ function serveNothing (res) {
   res.end('');
 }
 
+function serveSceneConfig (sceneName) {
+  serveStatic('scene/' + sceneName + '.json');
+}
+
 function serveStatic (url, res) {
   fs.readFile( publicDir(url), function (err, data) {
     if (err) {
@@ -47,10 +54,8 @@ function serveStatic (url, res) {
   });
 }
 
-
-io.on('connection', function (socket) {
-  setInterval(function () {
-
+function dispatchEmulatedInputEvent (socket) {
+  return function () {
     var event = randomFrom([ 'keydown', 'keyup', 'mousedown', 'mouseup' ]);
 
     switch (event) {
@@ -65,8 +70,25 @@ io.on('connection', function (socket) {
       default:
         log('unhandled:', event);
     }
+  }
+}
 
-  }, 500);
+io.on('connection', function (socket) {
+
+  socket.on('save', function (name, sceneData) {
+    fs.writeFile(sceneDir(name), sceneData, function (err) {
+      if (err) {
+        log('ERROR', err);
+      } else {
+        socket.emit('save-complete', name);
+      }
+    });
+  });
+
+  if (Config.emulateInputEvents) {
+    setInterval(dispatchEmulatedInputEvent(socket), 500);
+  }
+
 });
 
 

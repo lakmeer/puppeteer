@@ -2,7 +2,7 @@
 { id, log, v2 } = require \std
 
 class Port
-  ({ @type, pos }) ->
+  ({ @type, @owner, pos }) ->
     @pos = v2 0, 0
     @move-to pos
 

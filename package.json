@@ -28,6 +28,7 @@
   "browser": {
     "std": "./src/std/index.ls",
     "test": "./test/index.ls",
+    "global": "./src/global/index.ls",
     "config": "./config/index.ls"
   },
   "browserify": {

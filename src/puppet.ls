@@ -23,6 +23,8 @@ export class Puppet extends Trigger
       for { type, on-pull } in input-spec
         new Input { type }
 
+    @chain = []
+
   pull: ->
     @chain = @inputs.map (.pull!) .filter id
 

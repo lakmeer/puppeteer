@@ -20,6 +20,9 @@
 - Allow Link representation to respond to state
 - Implement loss-of-event-source messaging
 - Pull Link view out of logical class
+- Serialising:
+  - Track all nodes created
+  - Start serialisation walk for every node with no outputs (this includes Puppet)
 
 
 ### Server

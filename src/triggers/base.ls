@@ -28,12 +28,14 @@ export class Trigger
   generate-ports: ({ input-spec = [], output-spec = [] }) ->
     @inputs =
       for { type, on-push } in input-spec
-        new Input { type, on-push: on-push.bind this }
+        new Input { type, owner: this, on-push: on-push.bind this }
 
     @outputs =
       for { type, on-pull } in output-spec
-        new Output { type, on-pull: on-pull.bind this }
+        new Output { type, owner: this, on-pull: on-pull.bind this }
 
   specify-inputs:  -> []
   specify-outputs: -> []
+
+  serialise-self: -> {}
 
