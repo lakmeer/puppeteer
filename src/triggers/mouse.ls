@@ -13,12 +13,11 @@ export class MouseTrigger extends Trigger
 
     @generate-ports { output-spec }
 
-    document.add-event-listener \mousedown, ({ button }:event) ~>
+    GlobalServices.EventSource.on \mousedown, (button) ~>
       if @button-index is button then @set on
 
-    document.add-event-listener \mouseup, ({ button }) ~>
+    GlobalServices.EventSource.on \mouseup, (button) ~>
       if @button-index is button then @set off
-
 
     # Only block context menu if RMB is actually being requested
 

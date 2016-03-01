@@ -43,3 +43,5 @@ export load-image = (src, λ = id) ->
 
 export abs = Math.abs
 
+export invoke = -> it?!
+

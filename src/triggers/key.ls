@@ -4,6 +4,7 @@
 { Trigger } = require \./base
 { Output }  = require \../port
 
+
 export class KeyTrigger extends Trigger
 
   output-spec = [ { type: SIGNAL_TYPE_POKE, on-pull: -> @state } ]
@@ -13,11 +14,8 @@ export class KeyTrigger extends Trigger
 
     @generate-ports { output-spec }
 
-    document.add-event-listener \keydown, ({ which }) ~>
-      if @keycode is which then @set on
-
-    document.add-event-listener \keyup, ({ which }) ~>
-      if @keycode is which then @set off
+    GlobalServices.EventSource.on \keydown, ~> if @keycode is it then @set on
+    GlobalServices.EventSource.on \keyup,   ~> if @keycode is it then @set off
 
   set: ->
     GlobalServices.Poke.poke!

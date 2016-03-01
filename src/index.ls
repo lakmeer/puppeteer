@@ -1,7 +1,9 @@
 
 { id, log, raf, mash, random-from, v2 } = require \std
 
-{ } = require \config
+require \./globals
+require \config
+require \./global-services
 
 { DragMonitor } = require \./drag-monitor
 { Workspace }   = require \./workspace
@@ -106,7 +108,7 @@ draw = ->
   nodes.map (.draw workspace)
   #audio.draw workspace
 
-global.GlobalServices.Poke.poke = ->
+global.GlobalServices.Poke.on-poke ->
   set-timeout draw, 0
 
 
