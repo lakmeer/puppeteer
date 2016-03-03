@@ -13,27 +13,29 @@ export class PortSetRep
 
   PORT_WIDTH = 20
 
-  (@target, { @offset = 0, @height = 100, pos = v2 0 0 }:config) ->
-    @pos = v2 0, 0
-    @move-to pos
+  (@target, { @offset = 0, @height = 100, @basis = v2 0 0 }) ->
+    @port-positions = [ v2 0, 0 for i in @target.ports ]
+    @length = @port-positions.length
+    @move-to @basis
+
+  get-pos: (ix) ->
+    @port-positions[ix]
 
   get-port-vertical-pos: (i) ->
     space = (@height - 20 * @length) / if @length is 1 then 1 else @length - 1
-    start = @pos.y + PORT_WIDTH/2 - @height/2
-    start + i * (PORT_WIDTH + space)
+    start = PORT_WIDTH/2 - @height/2
+    y-pos = start + i * (PORT_WIDTH + space)
 
   move-to: ({ x, y }) ->
-    @pos.x = x + @offset
-    @pos.y = y
+    @basis.x = x + @offset
+    @basis.y = y
 
-    for port, i in @target.ports
-      port.move-to do
-        x: @pos.x,
-        y: @get-port-vertical-pos i
+    for pos, i in @port-positions
+      pos.x = @basis.x
+      pos.y = @basis.y + @get-port-vertical-pos i
 
   draw: ({ ctx }) ->
     for port, i in @target.ports
       ctx.fill-style = port-color port
-      ctx.fill-rect @pos.x - 3, @pos.y - 10, 8, 20
-
+      ctx.fill-rect @port-positions[i].x, @port-positions[i].y - 10, 8, 20
 

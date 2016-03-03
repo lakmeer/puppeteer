@@ -36,11 +36,11 @@ class PortSet
 
 export class InputSet extends PortSet
   generate-ports: (spec) ->
-    for { type, on-push = id } in spec
-      new Input { type, owner: @owner, on-push: on-push.bind @owner }
+    for { type, on-push = id }, ix in spec
+      new Input { type, owner: @owner, index: ix, on-push: on-push.bind @owner }
 
 export class OutputSet extends PortSet
   generate-ports: (spec) ->
-    for { type, on-pull = id } in spec
-      new Output { type, owner: @owner, on-pull: on-pull.bind @owner }
+    for { type, on-pull = id }, ix in spec
+      new Output { type, owner: @owner, index: ix, on-pull: on-pull.bind @owner }
 

@@ -12,7 +12,7 @@ determine-status = (a, b) ->
 export class Link
 
   (@from, @to) ->
-    log \Link @from, @to
+    # log \Link @from, @to
     @from.assign-link this
     @to.assign-link this
     @status = determine-status @from, @to

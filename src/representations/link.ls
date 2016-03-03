@@ -22,8 +22,8 @@ export class LinkRep
 
   draw: ({ ctx }) ->
 
-    fp = @target.from.owner.rep.outputs.pos
-    tp = @target.to.owner.rep.inputs.pos
+    fp = @target.from.owner.rep.outputs.get-pos @target.from.index
+    tp = @target.to.owner.rep.inputs.get-pos @target.to.index
     ss = @target.infer-signal-strength!
 
     d = hyp tp, fp

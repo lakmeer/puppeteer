@@ -2,7 +2,6 @@
 { id, log, delay } = require \std
 
 { Node } = require \./base
-{ Output } = require \../port
 
 export class TimerNode extends Node
 
@@ -35,4 +34,9 @@ export class TimerNode extends Node
   stop: ->
     @active = no
     @set off
+
+  serialise-self: ->
+    time: @time
+    duty: @duty
+    offset: @offset
 

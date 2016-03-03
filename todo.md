@@ -14,19 +14,18 @@
   If this doesn't work out, move to a 'poke next frame' flag for global pokes,
   delaying the reaction by a from but preventing loops.
 
-- Do correct aspect scaling inside GraphicRep
 - Totally separate the actual graph from it's graphical management
-- Promote PortSet to the trigger itself
-- Allow Link representation to respond to state
+- Give registration concept to Sprites
 - Implement loss-of-event-source messaging
-- Pull Link view out of logical class
 - Serialising:
   - Track all nodes created
   - Start serialisation walk for every node with no outputs (this includes Puppet)
-- Deserialise function
+- Write node serialisation functions
+- Finish deserialise function
 
 
 ### Server
 
 - Work out (/ask sreeram) how to statically link libwebsockets
+- OS Hooks as node extension?
 

@@ -4,8 +4,8 @@
 { Representation } = require \./representations/base
 { RectXYS }        = require \./rect
 { Link }           = require \./link
-{ InputSet, OutputSet } = require \./port-set
-{ PortSetRep } = require \./representations/port-set
+{ PortSetRep }     = require \./representations/port-set
+{ LinkRep }        = require \./representations/link
 
 
 export class VisualNode
@@ -17,21 +17,18 @@ export class VisualNode
       signal: off
 
     @bounds  = new RectXYS   @pos, @size
-    @inputs  = new PortSetRep @content.inputs,  { pos: @pos, offset: @rep.size/-2 }
-    @outputs = new PortSetRep @content.outputs, { pos: @pos, offset: @rep.size/2 }
+    @inputs  = new PortSetRep @content.inputs,  { basis: (v2 @pos), height: @size, offset: @size/-2 - 3 }
+    @outputs = new PortSetRep @content.outputs, { basis: (v2 @pos), height: @size, offset: @size/2 - 6 }
 
-    # TODO: Don't do this
+    # TODO: Don't backreference like this
     @content.rep = this
 
   pull: ->
     @state.signal = @content.state
 
   draw: ({ ctx }) ->
-
     @rep.draw @content
-
     ctx.draw-image @rep.canvas, @pos.x - @size/2 , @pos.y - @size/2, @size, @size
-
     @inputs.draw { ctx }
     @outputs.draw { ctx }
 
@@ -50,7 +47,7 @@ export class VisualNode
     @update-child-pos!
 
   update-child-pos: ->
-    log "Moved to:", @pos.x, @pos.y
+    log "Moved to:", @pos.x, @pos.y  # TODO: Render this to canvas instead
     @bounds.move-to @pos
     @inputs.move-to @pos
     @outputs.move-to @pos
@@ -59,11 +56,11 @@ export class VisualNode
     @bounds.contains point
 
   @link = (a, b) ->
-    new Link a.content.outputs.next, b.content.inputs.next
+    new LinkRep (new Link a.content.outputs.next, b.content.inputs.next)
 
   @chain = (...nodes) ->
     for i from 0 to nodes.length - 2
       a = nodes[i]
       b = nodes[i+1]
-      new Link a.content.outputs.next, b.content.inputs.next
+      new LinkRep (new Link a.content.outputs.next, b.content.inputs.next)
 

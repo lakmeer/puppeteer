@@ -164,11 +164,9 @@ GlobalServices.SceneLibrary.load \test-scene, (data) ->
 
 # Render when graph updates
 
-link-reps = links.map -> new LinkRep it
-
 draw = ->
   workspace.clear!
-  link-reps.map (.draw workspace)
+  links.map (.draw workspace)
   nodes.map (.draw workspace)
 
 global.GlobalServices.Poke.on-poke ->
