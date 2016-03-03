@@ -1,10 +1,10 @@
 
 { id, log, delay } = require \std
 
-{ Trigger } = require \./base
+{ Node } = require \./base
 { Output } = require \../port
 
-export class TimerTrigger extends Trigger
+export class TimerNode extends Node
 
   output-spec = [ { type: SIGNAL_TYPE_POKE, on-pull: -> @state } ]
 

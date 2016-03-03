@@ -1,11 +1,11 @@
 
 { id, log } = require \std
 
-{ Trigger } = require \./base
+{ Node } = require \./base
 { Output }  = require \../port
 
 
-export class KeyTrigger extends Trigger
+export class KeyNode extends Node
 
   output-spec = [ { type: SIGNAL_TYPE_POKE, on-pull: -> @state } ]
 

@@ -1,4 +1,6 @@
 
+{ id, log } = require \std
+
 export class Blitter
 
   idx = do (i = 0) -> -> i++

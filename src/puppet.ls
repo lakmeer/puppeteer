@@ -3,9 +3,9 @@
 
 { Sprite } = require \./sprite
 { Input }  = require \./port
-{ Trigger } = require \./triggers/base
+{ Node }   = require \./nodes/base
 
-export class Puppet extends Trigger
+export class Puppet extends Node
 
   input-spec = [
     * type: SIGNAL_TYPE_GRAPHIC
@@ -19,10 +19,7 @@ export class Puppet extends Trigger
   ]
 
   ->
-    @inputs =
-      for { type, on-pull } in input-spec
-        new Input { type }
-
+    @generate-ports { input-spec }
     @chain = []
 
   pull: ->
@@ -35,7 +32,6 @@ export class Puppet extends Trigger
       if sprite.height > max then max = sprite.width
     return max
 
-  draw: ({ ctx, size, offset = v2 0 0 }) ->
-    if winner = @chain[* - 1]
-      winner.blit-to ctx, offset.x, offset.y + size - winner.height
+  get-winner: ->
+    @chain[* - 1]
 

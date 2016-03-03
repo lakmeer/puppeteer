@@ -1,10 +1,10 @@
 
 { id, log, raf, keys, get-microphone } = require \std
 
-{ Trigger } = require \./base
+{ Node } = require \./base
 
 
-export class MicTrigger extends Trigger
+export class MicNode extends Node
 
   SMOOTHING = 2
 

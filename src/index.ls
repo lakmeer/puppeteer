@@ -12,11 +12,11 @@ require \config
 
 { Puppet } = require \./puppet
 
-{ KeyTrigger }     = require \./triggers/key
-{ MicTrigger }     = require \./triggers/mic
-{ MouseTrigger }   = require \./triggers/mouse
-{ TimerTrigger }   = require \./triggers/timer
-{ GraphicTrigger } = require \./triggers/graphic
+{ KeyNode }     = require \./nodes/key
+{ MicNode }     = require \./nodes/mic
+{ MouseNode }   = require \./nodes/mouse
+{ TimerNode }   = require \./nodes/timer
+{ GraphicNode } = require \./nodes/graphic
 
 { MicRep }     = require \./representations/mic
 { KeyRep }     = require \./representations/key
@@ -24,6 +24,7 @@ require \config
 { PuppetRep }  = require \./representations/puppet
 { GraphicRep } = require \./representations/graphic
 { MouseRep }   = require \./representations/mouse
+{ LinkRep }    = require \./representations/link
 
 { NumericShim, ShimRep } = require \./shim
 
@@ -41,20 +42,20 @@ hot-node = null
 workspace = new Workspace
 
 
-# Create Triggers/Nodes
+# Create Nodes
 
 puppet = null
 
 construct-test-scene = ->
-  z = new KeyTrigger KEY_Z
-  x = new KeyTrigger KEY_X
-  c = new KeyTrigger KEY_C
-  v = new KeyTrigger KEY_V
-  #t = new TimerTrigger time: 1
-  p = new TimerTrigger time: 10, duty: 0.1, offset: 7
+  z = new KeyNode KEY_Z
+  x = new KeyNode KEY_X
+  c = new KeyNode KEY_C
+  v = new KeyNode KEY_V
+  #t = new TimerNode time: 1
+  p = new TimerNode time: 10, duty: 0.1, offset: 7
 
-  left = new MouseTrigger MOUSE_LEFT
-  mic  = new MicTrigger
+  left = new MouseNode MOUSE_LEFT
+  mic  = new MicNode
 
   puppet := new Puppet
 
@@ -79,7 +80,7 @@ construct-test-scene = ->
   anim-nodes = mash do
     for name, i in <[ look draw drop frustrate choke sing ]>
       sprite  = new Sprite src: "assets/#{name}_01.png"
-      graphic = new GraphicTrigger { sprite }
+      graphic = new GraphicNode { sprite }
       nodes.push node = new VisualNode content: graphic, rep: (new GraphicRep graphic), size: 130, pos: v2 280 80 + 140 * i
       [ name, node ]
 
@@ -114,26 +115,60 @@ walk = (node) ->
     type: node@@display-name
     state: node.serialise-self!
     incoming:
-      for input, i in node.inputs
+      for input, i in node.inputs.all
         if input.link
           walk input.link.from.owner
         else
           null
 
-#construct-test-scene!
-#scene = JSON.stringify (walk puppet), null, 2
-#GlobalServices.SceneLibrary.save \test-scene, scene
+construct-test-scene!
+scene = JSON.stringify (walk puppet), null, 2
+GlobalServices.SceneLibrary.save \test-scene, scene
+
+NodeProvider = (node-type) ->
+  switch node-type
+  | \Puppet => [ Puppet, PuppetRep ]
+  | \KeyNode => [ KeyNode, KeyRep ]
+  | \GraphicNode => [ GraphicNode, GraphicRep ]
+  | \MouseNode => [ MouseNode, MouseRep ]
+  | \TimerNode => [ TimerNode, TimerRep ]
+  | \MicNode => [ MicNode, MicRep ]
+  | otherwise => "NodeProvider - can't get node for type '#node-type'"
 
 GlobalServices.SceneLibrary.load \test-scene, (data) ->
-  log 'Load:', data
-  console.warn 'TODO: Deserialise into node graph'
+  return
+
+  traverse = (node-data, parent) ->
+    log \traverse node-data.type
+
+    [ NodeClass, RepClass ] = NodeProvider node-data.type
+
+    node = new NodeClass {}
+    node.deserialise node-data.state
+
+    nodes.push visual-node = new VisualNode content: node, rep: (new RepClass node), pos: v2 0 0
+
+    if node-data.type is \Puppet
+      puppet := node
+
+    for v, i in node-data.incoming when v?
+      traverse v
+
+    if parent?
+      void
+
+  traverse data
+
+
 
 
 # Render when graph updates
 
+link-reps = links.map -> new LinkRep it
+
 draw = ->
   workspace.clear!
-  links.map (.draw workspace)
+  link-reps.map (.draw workspace)
   nodes.map (.draw workspace)
 
 global.GlobalServices.Poke.on-poke ->

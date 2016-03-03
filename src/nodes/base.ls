@@ -1,9 +1,9 @@
 
 { id, log } = require \std
 
-{ Input, Output } = require \../port
+{ InputSet, OutputSet } = require \../port-set
 
-export class Trigger
+export class Node
 
   ->
     @state    = off
@@ -26,16 +26,10 @@ export class Trigger
     @callback = λ
 
   generate-ports: ({ input-spec = [], output-spec = [] }) ->
-    @inputs =
-      for { type, on-push } in input-spec
-        new Input { type, owner: this, on-push: on-push.bind this }
-
-    @outputs =
-      for { type, on-pull } in output-spec
-        new Output { type, owner: this, on-pull: on-pull.bind this }
-
-  specify-inputs:  -> []
-  specify-outputs: -> []
+    @inputs  = new InputSet { spec: input-spec, owner: this }
+    @outputs = new OutputSet { spec: output-spec, owner: this }
 
   serialise-self: -> {}
+
+  deserialise: (data) ->
 

@@ -3,11 +3,11 @@
 
 { VowelWorm } = require \../vowelworm.js
 
-{ Trigger } = require \./base.ls
+{ Node } = require \./base.ls
 
 
 
-export class VowelTrigger extends Trigger
+export class VowelNode extends Node
 
   minHz             = 0
   maxHz             = 8000
@@ -16,7 +16,7 @@ export class VowelTrigger extends Trigger
 
   ->
     super ...
-    log "New VowelTrigger"
+    log "New VowelNode"
 
     @worm = void
 

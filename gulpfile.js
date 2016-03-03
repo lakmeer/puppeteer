@@ -64,7 +64,7 @@ gulp.task('script', function () {
 // Register
 
 gulp.task('default', [ 'server', 'script' ], function () {
-  gulp.watch(['src/**/*.ls'], [ 'script' ]);
+  gulp.watch(['src/**/*.ls', 'config/*.ls'], [ 'script' ]);
   gulp.watch(['public/**/*']).on('change', reload);
 });
 

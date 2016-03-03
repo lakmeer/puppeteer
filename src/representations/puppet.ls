@@ -5,12 +5,16 @@
 
 export class PuppetRep extends Representation
 
+  offset = v2 10 10
+
   ->
     super ...
 
-  draw: ->
+  draw: ({ ctx }) ->
     @size = @target.get-size!
     @canvas.width = @canvas.height = @size
     @draw-border!
-    @target.draw ctx: @ctx, size: @size - 20, offset: v2 10 10
+
+    if sprite = @target.get-winner!
+      sprite.blit-to @ctx, offset.x, offset.y + @size - 20 - sprite.height
 
