@@ -2,6 +2,7 @@
 { id, log } = require \std
 
 { Node } = require \./base
+{ Sprite } = require \../sprite
 
 
 # Graphic
@@ -24,4 +25,10 @@ export class GraphicNode extends Node
     if @inputs.get(0).link?
       @set @inputs.get(0).pull!
     if @state then @sprite else null
+
+  serialise: ->
+    sprite: @sprite.serialise!
+
+  @deserialise = (config) ->
+    new GraphicNode sprite: new Sprite config.sprite
 

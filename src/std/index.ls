@@ -45,3 +45,5 @@ export abs = Math.abs
 
 export invoke = -> it?!
 
+export translate2 = (origin, translation) -> v2 origin.x + translation.x, origin.y + translation.y
+

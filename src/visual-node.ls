@@ -20,7 +20,7 @@ export class VisualNode
     @inputs  = new PortSetRep @content.inputs,  { basis: (v2 @pos), height: @size, offset: @size/-2 - 3 }
     @outputs = new PortSetRep @content.outputs, { basis: (v2 @pos), height: @size, offset: @size/2 - 6 }
 
-    # TODO: Don't backreference like this
+    # TODO: I shouldn't backreference like this. OR SHOULD I??
     @content.rep = this
 
   pull: ->
@@ -55,12 +55,13 @@ export class VisualNode
   bounds-contains: (point) ->
     @bounds.contains point
 
+  serialise: ->
+    @rep.serialise!
+
   @link = (a, b) ->
-    new LinkRep (new Link a.content.outputs.next, b.content.inputs.next)
+    new LinkRep (new Link from: a.content.outputs.next, to: b.content.inputs.next)
 
   @chain = (...nodes) ->
     for i from 0 to nodes.length - 2
-      a = nodes[i]
-      b = nodes[i+1]
-      new LinkRep (new Link a.content.outputs.next, b.content.inputs.next)
+      @link nodes[i], nodes[i+1]
 

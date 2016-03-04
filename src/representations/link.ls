@@ -1,5 +1,5 @@
 
-{ id, log, hyp, abs, v2 } = require \std
+{ id, log, hyp, abs, v2, translate2 } = require \std
 
 i = 0
 
@@ -22,9 +22,21 @@ export class LinkRep
 
   draw: ({ ctx }) ->
 
-    fp = @target.from.owner.rep.outputs.get-pos @target.from.index
-    tp = @target.to.owner.rep.inputs.get-pos @target.to.index
-    ss = @target.infer-signal-strength!
+    tp = v2 0 0
+    fp = v2 0 0
+
+    if @target.status is LINK_STATUS_INCOMPLETE
+      if @target.from
+        fp = @target.from.owner.rep.outputs.get-pos @target.from.index
+        tp = translate2 fp, v2 -10 0
+      else if @target.to
+        tp = @target.to.owner.rep.inputs.get-pos @target.to.index
+        fp = translate2 tp, v2 10 0
+      ss = Math.random!
+    else
+      fp = @target.from.owner.rep.outputs.get-pos @target.from.index
+      tp = @target.to.owner.rep.inputs.get-pos @target.to.index
+      ss = @target.infer-signal-strength!
 
     d = hyp tp, fp
     d = tp.x - fp.x

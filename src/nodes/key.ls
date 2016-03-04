@@ -9,7 +9,7 @@ export class KeyNode extends Node
 
   output-spec = [ { type: SIGNAL_TYPE_POKE, on-pull: -> @state } ]
 
-  (@keycode) ->
+  ({ @keycode }) ->
     super ...
 
     @generate-ports { output-spec }
@@ -20,4 +20,7 @@ export class KeyNode extends Node
   set: ->
     GlobalServices.Poke.poke!
     super ...
+
+  serialise: ->
+    keycode: @keycode
 

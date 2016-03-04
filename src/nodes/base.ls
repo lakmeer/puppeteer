@@ -29,7 +29,8 @@ export class Node
     @inputs  = new InputSet { spec: input-spec, owner: this }
     @outputs = new OutputSet { spec: output-spec, owner: this }
 
-  serialise-self: -> {}
+  serialise: ->
+    console.warn this@@display-name, 'should implement serialise'
 
-  deserialise: (data) ->
+  @deserialise = (config) -> new this config
 

@@ -13,14 +13,14 @@ export class MicNode extends Node
     { type: SIGNAL_TYPE_NUMBER, on-pull: -> @value }
   ]
 
-  ->
+  ({ @threshold = 1.1 }) ->
     super ...
 
     @running = no
     @audio   = new AudioContext
     @hist    = []
     @avg     = 0
-    @threshold = 1.1
+    @value   = 0
 
     @generate-ports { output-spec }
 
@@ -28,6 +28,8 @@ export class MicNode extends Node
     @analyser.fft-size = 2048
     @buffer-length = @analyser.frequency-bin-count
     @data-array    = new Uint8Array @buffer-length
+
+    @start!
 
   start: ->
     get-microphone (mic-stream) ~>
@@ -38,7 +40,7 @@ export class MicNode extends Node
 
   monitor: ->
     if @running then raf this~monitor
-    @analyser.getByteTimeDomainData @data-array
+    @analyser.get-byte-time-domain-data @data-array
     avg = 0
     max = 0
 
@@ -58,4 +60,7 @@ export class MicNode extends Node
     @value = @avg / @threshold
 
     GlobalServices.Poke.poke!
+
+  serialise: ->
+    threshold: @threshold
 

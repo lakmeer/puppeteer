@@ -2,7 +2,13 @@
 { id, log, abs, hyp, random-from } = require \std
 
 determine-status = (a, b) ->
-  if a.type isnt b.type
+  if not a
+    console.warn "Link::new - 'from' end is unavailable"
+    LINK_STATUS_INCOMPLETE
+  else if not b
+    console.warn "Link::new - 'to' end is unavailable"
+    LINK_STATUS_INCOMPLETE
+  else if a.type isnt b.type
     console.warn "Link::new - can't join ports of disparate types! - FROM:", a.type, "| TO:", b.type
     LINK_STATUS_MISMATCH
   else
@@ -11,10 +17,10 @@ determine-status = (a, b) ->
 
 export class Link
 
-  (@from, @to) ->
+  ({ @from, @to }) ->
     # log \Link @from, @to
-    @from.assign-link this
-    @to.assign-link this
+    @from?.assign-link this
+    @to?.assign-link this
     @status = determine-status @from, @to
     @signal-strength = 0
 

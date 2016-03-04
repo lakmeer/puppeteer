@@ -16,12 +16,12 @@ export class Representation
     @draw-backing!
     @draw-border!
 
-  draw-backing: ->
-    @ctx.fill-style = \white
+  draw-backing: (color = \white) ->
+    @ctx.fill-style = color
     @ctx.fill-rect 0, 0, @canvas.width, @canvas.height
 
-  draw-border: ->
-    @ctx.fill-style = @border-color!
+  draw-border: (color = @border-color!) ->
+    @ctx.fill-style = color
     @ctx.fill-rect 0, 0, @size, bw
     @ctx.fill-rect 0, bw, bw, @size - bw
     @ctx.fill-rect @size - bw, bw, bw, @size - bw
@@ -41,6 +41,10 @@ export class Representation
 
   set-mode: (mode) ->
     @state.mode = mode
+
+  serialise: ->
+    pos: @pos
+    size: @size
 
   @NullRepresentation = new Representation { state: off }
 

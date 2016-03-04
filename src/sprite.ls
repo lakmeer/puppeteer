@@ -5,7 +5,7 @@
 
 export class Sprite extends Blitter
 
-  ({ src }) ->
+  ({ @src }) ->
     super ...
 
     @img = new Image
@@ -19,7 +19,10 @@ export class Sprite extends Blitter
       @ctx.draw-image @img, 0, 0
       GlobalServices.Poke.poke!
 
-    @img.src = src
+    @img.src = @src
 
     @active = no
+
+  serialise: ->
+    src: @src
 

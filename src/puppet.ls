@@ -1,8 +1,6 @@
 
 { id, log, mash } = require \std
 
-{ Sprite } = require \./sprite
-{ Input }  = require \./port
 { Node }   = require \./nodes/base
 
 export class Puppet extends Node
@@ -34,4 +32,6 @@ export class Puppet extends Node
 
   get-winner: ->
     @chain[* - 1]
+
+  serialise: -> {}
 

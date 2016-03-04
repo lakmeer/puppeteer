@@ -8,7 +8,7 @@ export class MouseNode extends Node
 
   output-spec = [ { type: SIGNAL_TYPE_POKE, on-pull: -> @state } ]
 
-  (@button-index) ->
+  ({ @button-index }) ->
     super ...
 
     @generate-ports { output-spec }
@@ -25,4 +25,7 @@ export class MouseNode extends Node
 
     if @button-index is MOUSE_RIGHT
       document.add-event-listener \contextmenu, (.prevent-default!)
+
+  serialise: ->
+    button-index: @button-index
 

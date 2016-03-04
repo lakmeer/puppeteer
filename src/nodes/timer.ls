@@ -35,7 +35,7 @@ export class TimerNode extends Node
     @active = no
     @set off
 
-  serialise-self: ->
+  serialise: ->
     time: @time
     duty: @duty
     offset: @offset
